@@ -9,8 +9,8 @@ Gem::Specification.new do |spec|
   spec.authors       = ["vaughanbrittonsage"]
   spec.email         = ["vaughanbritton@gmail.com"]
 
-  spec.summary       = 'A lightweight framework to provide managers for working with aws elasticsearch (incuding local version).'
-  spec.description   = 'A lightweight framework to provide managers for working with aws elasticsearch (incuding local version).'
+  spec.summary       = 'A lightweight framework to for working with elastic search.'
+  spec.description   = 'A lightweight framework to for working with elastic search.'
   spec.homepage      = "https://github.com/sage/elastic_search_framework"
   spec.license       = "MIT"
 
