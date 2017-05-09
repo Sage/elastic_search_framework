@@ -129,7 +129,11 @@ module ElasticSearchFramework
     end
 
     def full_name
-      "#{ElasticSearchFramework.namespace}#{ElasticSearchFramework.namespace_delimiter}#{description[:name].downcase}"
+      if ElasticSearchFramework.namespace != nil
+        "#{ElasticSearchFramework.namespace}#{ElasticSearchFramework.namespace_delimiter}#{description[:name].downcase}"
+      else
+        description[:name].downcase
+      end
     end
 
     def host
