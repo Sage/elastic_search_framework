@@ -1,0 +1,1 @@
+require_relative 'exceptions/index_error'
