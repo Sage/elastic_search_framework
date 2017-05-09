@@ -151,5 +151,9 @@ module ElasticSearchFramework
     def delete_item(id:, type: 'default')
       repository.drop(index: self, id: id, type: type)
     end
+
+    def query
+      ElasticSearchFramework::Query.new(index: self)
+    end
   end
 end

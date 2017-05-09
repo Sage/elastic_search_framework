@@ -2,8 +2,10 @@ module ElasticSearchFramework
   class Repository
 
     def set(index:, id:, entity:, type: 'default')
+      client = curl
       client.url = "#{host}/#{index.full_name}/#{type.downcase}/#{id}"
-      client.http_put(class_helper.to_json(entity))
+      hash = hash_helper.to_hash(entity)
+      client.http_put(JSON.dump(hash))
       unless is_valid_response?(client)
         raise ElasticSearchFramework::Exceptions::IndexError.new("An error occurred setting an index document. Response: #{client.body_str}")
       end
@@ -11,11 +13,12 @@ module ElasticSearchFramework
     end
 
     def get(index:, id:, type: 'default')
+      client = curl
       client.url = "#{host}/#{index.full_name}/#{type.downcase}/#{id}/_source"
       client.get
       if is_valid_response?(client)
         result = JSON.load(client.body_str)
-        hash_helper.hash_kit.indifferent!(result)
+        hash_helper.indifferent!(result)
         return result
       elsif client.response_code == 404
         return nil
@@ -25,6 +28,7 @@ module ElasticSearchFramework
     end
 
     def drop(index:, id:, type: 'default')
+      client = curl
       client.url = "#{host}/#{index.full_name}/#{type.downcase}/#{id}"
       client.delete
       if is_valid_response?(client) || client.response_code == 404
@@ -34,8 +38,25 @@ module ElasticSearchFramework
       end
     end
 
-    def client
-      @curl ||= Curl::Easy.new
+    def query(index:, expression:, type: 'default', limit: 10, count: false)
+      client = curl
+      client.url = "#{host}/#{index.full_name}/#{type}/_search?q=#{URI.encode(expression)}&size=#{limit}"
+      client.get
+      if is_valid_response?(client)
+        result = JSON.parse(client.body_str)
+        hash_helper.indifferent!(result)
+        if count
+          return result[:hits][:total]
+        else
+          return result[:hits][:total] > 0 ? result[:hits][:hits] : []
+        end
+      else
+        raise ElasticSearchFramework::Exceptions::IndexError.new("An error occurred executing an index query. Response: #{client.body_str}")
+      end
+    end
+
+    def curl
+      Curl::Easy.new
     end
 
     def is_valid_response?(client)
@@ -47,7 +68,7 @@ module ElasticSearchFramework
     end
 
     def hash_helper
-      @hash_helper ||= HashHelper.new
+      @hash_helper ||= HashKit::Helper.new
     end
 
   end
