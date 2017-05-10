@@ -26,6 +26,8 @@ Or install it yourself as:
 ### #namespace
 The namespace is used to set the prefix applied to all table and index names.
 
+> Optional.
+
     elasticsearchFramework.namespace = 'uat'
     
 > With a namespace of 'uat' and a table name of 'people', the resulting table name would be 'uat.people'
