@@ -37,10 +37,17 @@ This is the delimiter used to join the namespace prefix to table/index names.
 
     elasticsearchFramework.namespace_delimiter = '-'
     
-### #default_host
-This is used to set the default host that should be used for all connection actions that don't specify an override.
+### #host
+This is used to set the host that should be used for all connection actions.
 
-    ElasticSearchFramework.default_host = 'http://elasticsearch'
+    ElasticSearchFramework.host = 'http://elasticsearch'
+    
+### #port
+This is used to set the port that should be used for all connection actions.
+
+    ElasticSearchFramework.port = 9200
+    
+> DEFAULT = 9200
 
 # Index
 To define an index within elasticsearch, create an index definition class that extends from the `ElasticSearchFramework::Index` module.
