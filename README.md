@@ -71,7 +71,7 @@ To define an index within elasticsearch, create an index definition class that e
  - **id** [Hash] [Optional] [Default=id] This is used to specify the id field of the index document. (By default this is :id)
 
 ## #create
-This method is called create the index definition within an elastic search instance.
+This method is called to create the index definition within an elastic search instance.
 
     ExampleIndex.create
  
@@ -133,6 +133,8 @@ The above query chain translates into:
 To execute the query you can then call `#execute` on the query:
 
     query.execute
+    
+> Due to method chaining, the #execute method can also be chained to the end of a query directly.
     
 ### #execute
 This method is called to execute a query.
