@@ -49,10 +49,10 @@ RSpec.describe ElasticSearchFramework::Query do
       ExampleIndex.delete
       ExampleIndex.create
 
-      ExampleIndex.put_item(id: item1.id, item: item1)
-      ExampleIndex.put_item(id: item2.id, item: item2)
-      ExampleIndex.put_item(id: item3.id, item: item3)
-      ExampleIndex.put_item(id: item4.id, item: item4)
+      ExampleIndex.put_item(item: item1)
+      ExampleIndex.put_item(item: item2)
+      ExampleIndex.put_item(item: item3)
+      ExampleIndex.put_item(item: item4)
       sleep 1
     end
 

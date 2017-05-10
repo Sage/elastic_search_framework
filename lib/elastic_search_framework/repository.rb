@@ -1,9 +1,9 @@
 module ElasticSearchFramework
   class Repository
 
-    def set(index:, id:, entity:, type: 'default')
+    def set(index:, entity:, type: 'default')
       client = curl
-      client.url = "#{host}/#{index.full_name}/#{type.downcase}/#{id}"
+      client.url = "#{host}/#{index.full_name}/#{type.downcase}/#{get_id_value(index: index, entity: entity)}"
       hash = hash_helper.to_hash(entity)
       client.http_put(JSON.dump(hash))
       unless is_valid_response?(client)
@@ -64,11 +64,15 @@ module ElasticSearchFramework
     end
 
     def host
-      "#{ElasticSearchFramework.default_host}:#{ElasticSearchFramework.default_port}"
+      "#{ElasticSearchFramework.host}:#{ElasticSearchFramework.port}"
     end
 
     def hash_helper
       @hash_helper ||= HashKit::Helper.new
+    end
+
+    def get_id_value(index:, entity:)
+      entity.instance_variable_get("@#{index.description[:id]}")
     end
 
   end

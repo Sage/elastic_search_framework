@@ -10,6 +10,14 @@ module ElasticSearchFramework
       end
     end
 
+    def id(field)
+      unless instance_variable_defined?(:@elastic_search_index_id)
+        instance_variable_set(:@elastic_search_index_id, field)
+      else
+        raise ElasticSearchFramework::Exceptions::IndexError.new("[#{self.class}] - Duplicate index id. Field: #{field}.")
+      end
+    end
+
     def mapping(name:, field:, type:, analyser:)
 
       unless instance_variable_defined?(:@elastic_search_index_mappings)
@@ -113,7 +121,13 @@ module ElasticSearchFramework
     end
 
     def description
-      self.instance_variable_get(:@elastic_search_index_def)
+      hash = self.instance_variable_get(:@elastic_search_index_def)
+      if instance_variable_defined?(:@elastic_search_index_id)
+        hash[:id] = self.instance_variable_get(@elastic_search_index_id)
+      else
+        hash[:id] = :id
+      end
+      hash
     end
 
     def mappings
@@ -137,7 +151,7 @@ module ElasticSearchFramework
     end
 
     def host
-      "#{ElasticSearchFramework.default_host}:#{ElasticSearchFramework.default_port}"
+      "#{ElasticSearchFramework.host}:#{ElasticSearchFramework.port}"
     end
 
     def repository
@@ -148,8 +162,8 @@ module ElasticSearchFramework
       repository.get(index: self, id: id, type: type)
     end
 
-    def put_item(id:, type: 'default', item:)
-      repository.set(id: id, entity: item, index: self, type: type)
+    def put_item(type: 'default', item:)
+      repository.set(entity: item, index: self, type: type)
     end
 
     def delete_item(id:, type: 'default')

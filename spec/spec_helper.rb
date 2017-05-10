@@ -23,5 +23,5 @@ RSpec.configure do |config|
 end
 
 ElasticSearchFramework.logger.level = Logger::ERROR
-ElasticSearchFramework.default_host = 'http://elasticsearch'
-ElasticSearchFramework.default_port = 9200
+ElasticSearchFramework.host = 'http://elasticsearch'
+ElasticSearchFramework.port = 9200

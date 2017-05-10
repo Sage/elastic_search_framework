@@ -50,6 +50,8 @@ To define an index within elasticsearch, create an index definition class that e
     
       index name: 'example_index', shards: 1
       
+      id :example_id
+      
       mapping name: 'default', field: :name, type: :string, analyser: :not_analyzed    
     end
     
@@ -57,7 +59,7 @@ To define an index within elasticsearch, create an index definition class that e
 
  - **index** [Hash] [Required] This is used to specify the name of the index, and the number of shards the index should use.
  - **mapping** [Hash] [Optional] This is used to specify field mappings to control the analyzer used for a given field.
-
+ - **id** [Hash] [Optional] [Default=id] This is used to specify the id field of the index document. (By default this is :id)
 
 ## #create
 This method is called create the index definition within an elastic search instance.
@@ -74,6 +76,38 @@ This method is called to drop the index from an elastic search instance.
 This method is called to determine if an index exists in a elastic search instance.
 
     ExampleIndex.exists?
+    
+
+## #put_item
+This method is called to store a document/entity within the index.
+
+    ExampleIndex.put_item(item: document)
+    
+**Params**
+
+ - **item** [Object] [Required] This is the document/entity you want to store in the index.
+ - **type** [String] [Optional] [Default='default'] This is used to specify the type of the document within the index.
+
+## #get_item
+This method is called to fetch a document from within the index.
+
+    ExampleIndex.get_item(id: document_id)
+    
+**Params**
+
+ - **id** [String/Integer] [Required] This is the unique identifier of the document/entity you want to fetch from the index.
+ - **type** [String] [Optional] [Default='default'] This is used to specify the type of the document within the index.
+
+## #delete_item
+This method is called to delete a document from within the index.
+
+    ExampleIndex.delete_item(id: document_id)
+    
+**Params**
+
+ - **id** [String/Integer] [Required] This is the unique identifier of the document/entity you want to delete from the index.
+ - **type** [String] [Optional] [Default='default'] This is used to specify the type of the document within the index.
+
 
 
 ## #query

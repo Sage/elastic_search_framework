@@ -155,7 +155,7 @@ RSpec.describe ElasticSearchFramework::Index do
 
   describe '#host' do
     it 'should return the expected host based on default host & port values' do
-      expect(ExampleIndex.host).to eq "#{ElasticSearchFramework.default_host}:#{ElasticSearchFramework.default_port}"
+      expect(ExampleIndex.host).to eq "#{ElasticSearchFramework.host}:#{ElasticSearchFramework.port}"
     end
   end
 
@@ -189,8 +189,8 @@ RSpec.describe ElasticSearchFramework::Index do
       end
     end
     it 'should call set on the repository' do
-      expect_any_instance_of(ElasticSearchFramework::Repository).to receive(:set).with(id: id, entity: item, index: ExampleIndex, type: type)
-      ExampleIndex.put_item(id: id, type: type, item: item)
+      expect_any_instance_of(ElasticSearchFramework::Repository).to receive(:set).with(entity: item, index: ExampleIndex, type: type)
+      ExampleIndex.put_item(type: type, item: item)
     end
   end
 

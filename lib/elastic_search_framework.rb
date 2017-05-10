@@ -23,16 +23,16 @@ module ElasticSearchFramework
   def self.namespace_delimiter
     @namespace_delimiter ||= '.'
   end
-  def self.default_host=(value)
-    @default_store = value
+  def self.host=(value)
+    @host = value
   end
-  def self.default_host
-    @default_store
+  def self.host
+    @host
   end
-  def self.default_port=(value)
-    @default_port = value
+  def self.port=(value)
+    @port = value
   end
-  def self.default_port
-    @default_port ||= 9200
+  def self.port
+    @port ||= 9200
   end
 end

@@ -32,6 +32,21 @@ RSpec.describe ElasticSearchFramework::Repository do
     end
   end
 
+  describe '#get' do
+    before do
+      ExampleIndex.delete
+      ExampleIndex.create
+    end
+    context 'when no index document exists' do
+      it 'should return nil' do
+        expect(subject.get(index: ExampleIndex, id: item1.id)).to eq nil
+      end
+    end
+    after do
+      ExampleIndex.delete
+    end
+  end
+
   describe '#CRUD' do
     before do
       ExampleIndex.delete
@@ -39,8 +54,8 @@ RSpec.describe ElasticSearchFramework::Repository do
     end
 
     it 'should create, read and delete an index document' do
-      subject.set(index: ExampleIndex, id: item1.id, entity: item1)
-      subject.set(index: ExampleIndex, id: item2.id, entity: item2)
+      subject.set(index: ExampleIndex, entity: item1)
+      subject.set(index: ExampleIndex, entity: item2)
       index_item1 = subject.get(index: ExampleIndex, id: item1.id)
       expect(index_item1[:id]).to eq item1.id
       expect(index_item1[:name]).to eq item1.name
@@ -65,10 +80,10 @@ RSpec.describe ElasticSearchFramework::Repository do
       ExampleIndex.delete
       ExampleIndex.create
 
-      subject.set(index: ExampleIndex, id: item1.id, entity: item1)
-      subject.set(index: ExampleIndex, id: item2.id, entity: item2)
-      subject.set(index: ExampleIndex, id: item3.id, entity: item3)
-      subject.set(index: ExampleIndex, id: item4.id, entity: item4)
+      subject.set(index: ExampleIndex, entity: item1)
+      subject.set(index: ExampleIndex, entity: item2)
+      subject.set(index: ExampleIndex, entity: item3)
+      subject.set(index: ExampleIndex, entity: item4)
       sleep 1
     end
 
@@ -92,6 +107,12 @@ RSpec.describe ElasticSearchFramework::Repository do
 
     after do
       ExampleIndex.delete
+    end
+  end
+
+  describe '#host' do
+    it 'should return the expected host based on default host & port values' do
+      expect(subject.host).to eq "#{ElasticSearchFramework.host}:#{ElasticSearchFramework.port}"
     end
   end
 
