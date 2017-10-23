@@ -54,23 +54,33 @@ module ElasticSearchFramework
     end
 
     def put(payload:)
-      client = curl
-      client.url = "#{host}/#{full_name}"
-      json = JSON.dump(payload)
-      client.http_put(json)
-      unless is_valid_response?(client)
-        raise ElasticSearchFramework::Exceptions::IndexError.new("[#{self}] - Failed to put index. Payload: #{payload} | Response: #{client.body_str}")
+      uri = URI("#{host}/#{full_name}")
+
+      request = Net::HTTP::Put.new(uri.request_uri)
+      request.body = JSON.dump(payload)
+
+      response = repository.with_client do |client|
+        client.request(request)
+      end
+
+      unless is_valid_response?(response.code)
+        raise ElasticSearchFramework::Exceptions::IndexError.new("[#{self}] - Failed to put index. Payload: #{payload} | Response: #{response.body}")
       end
       true
     end
 
     def get
-      client = curl
-      client.url = "#{host}/#{full_name}"
-      client.http_get
+      uri = URI("#{host}/#{full_name}")
+
+      request = Net::HTTP::Get.new(uri.request_uri)
+
+      response = repository.with_client do |client|
+        client.request(request)
+      end
+
       result = nil
-      if is_valid_response?(client)
-        result = JSON.parse(client.body_str)
+      if is_valid_response?(response.code)
+        result = JSON.parse(response.body)
       end
       result
     end
@@ -80,10 +90,15 @@ module ElasticSearchFramework
     end
 
     def delete
-      client = curl
-      client.url = "#{host}/#{full_name}"
-      client.http_delete
-      is_valid_response?(client) || client.response_code == 404
+      uri = URI("#{host}/#{full_name}")
+
+      request = Net::HTTP::Delete.new(uri.request_uri)
+
+      response = repository.with_client do |client|
+        client.request(request)
+      end
+
+      is_valid_response?(response.code) || Integer(response.code) == 404
     end
 
     def create_payload(description:, mappings:)
@@ -134,12 +149,8 @@ module ElasticSearchFramework
       self.instance_variable_defined?(:@elastic_search_index_mappings) ? self.instance_variable_get(:@elastic_search_index_mappings) : {}
     end
 
-    def curl
-      Curl::Easy.new
-    end
-
-    def is_valid_response?(client)
-      [200,201,202].include?(client.response_code)
+    def is_valid_response?(code)
+      [200,201,202].include?(Integer(code))
     end
 
     def full_name

@@ -92,63 +92,41 @@ RSpec.describe ElasticSearchFramework::Index do
     end
   end
 
-  describe '#curl' do
-    it 'should return a Curl::Easy instance' do
-      expect(ExampleIndex.curl).to be_a(Curl::Easy)
-    end
-    it 'should return a unique Curl::Easy instance' do
-      expect(ExampleIndex.curl).not_to eq ExampleIndex.curl
-    end
-  end
-
   describe '#is_valid_response?' do
-    let(:client) { double }
+    let(:code) { 200 }
     context 'when a 200 response code is returned' do
-      before do
-        allow(client).to receive(:response_code).and_return(200)
-      end
       it 'should return true' do
-        expect(ExampleIndex.is_valid_response?(client)).to be true
+        expect(ExampleIndex.is_valid_response?(code)).to be true
       end
     end
     context 'when a 201 response code is returned' do
-      before do
-        allow(client).to receive(:response_code).and_return(201)
-      end
+      let(:code) { 201 }
       it 'should return true' do
-        expect(ExampleIndex.is_valid_response?(client)).to be true
+        expect(ExampleIndex.is_valid_response?(code)).to be true
       end
     end
     context 'when a 202 response code is returned' do
-      before do
-        allow(client).to receive(:response_code).and_return(202)
-      end
+      let(:code) { 202 }
       it 'should return true' do
-        expect(ExampleIndex.is_valid_response?(client)).to be true
+        expect(ExampleIndex.is_valid_response?(code)).to be true
       end
     end
     context 'when a 400 response code is returned' do
-      before do
-        allow(client).to receive(:response_code).and_return(400)
-      end
+      let(:code) { 400 }
       it 'should return false' do
-        expect(ExampleIndex.is_valid_response?(client)).to be false
+        expect(ExampleIndex.is_valid_response?(code)).to be false
       end
     end
     context 'when a 401 response code is returned' do
-      before do
-        allow(client).to receive(:response_code).and_return(401)
-      end
+      let(:code) { 401 }
       it 'should return false' do
-        expect(ExampleIndex.is_valid_response?(client)).to be false
+        expect(ExampleIndex.is_valid_response?(code)).to be false
       end
     end
     context 'when a 500 response code is returned' do
-      before do
-        allow(client).to receive(:response_code).and_return(500)
-      end
+      let(:code) { 500 }
       it 'should return false' do
-        expect(ExampleIndex.is_valid_response?(client)).to be false
+        expect(ExampleIndex.is_valid_response?(code)).to be false
       end
     end
   end

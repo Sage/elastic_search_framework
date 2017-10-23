@@ -1,6 +1,6 @@
 require 'hash_kit'
 require 'json'
-require 'curb'
+require 'connection_pool'
 require_relative 'elastic_search_framework/version'
 require_relative 'elastic_search_framework/logger'
 require_relative 'elastic_search_framework/exceptions'
