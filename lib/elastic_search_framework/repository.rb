@@ -119,7 +119,11 @@ module ElasticSearchFramework
     end
 
     def get_id_value(index:, entity:)
-      entity.instance_variable_get("@#{index.description[:id]}")
+      if entity.is_a?(Hash)
+        entity[index.description[:id].to_sym] || entity[index.description[:id].to_s]
+      else
+        entity.instance_variable_get("@#{index.description[:id]}")
+      end
     end
 
     def with_client

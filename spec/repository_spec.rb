@@ -31,6 +31,14 @@ RSpec.describe ElasticSearchFramework::Repository do
       i.number = 20
     end
   end
+  let(:item5) do
+    {
+        id: 5,
+        name: 'peter',
+        timestamp: Time.now.to_i + 400,
+        number: 25
+    }
+  end
 
   describe '#get' do
     before do
@@ -49,6 +57,8 @@ RSpec.describe ElasticSearchFramework::Repository do
 
   describe '#CRUD' do
     before do
+      ElasticSearchFramework.namespace = 'test'
+      ElasticSearchFramework.namespace_delimiter = '_'
       ExampleIndexWithId.delete
       ExampleIndexWithId.create
     end
@@ -56,6 +66,7 @@ RSpec.describe ElasticSearchFramework::Repository do
     it 'should create, read and delete an index document' do
       subject.set(index: ExampleIndex, entity: item1)
       subject.set(index: ExampleIndex, entity: item2)
+      subject.set(index: ExampleIndex, entity: item5)
       index_item1 = subject.get(index: ExampleIndex, id: item1.id)
       expect(index_item1[:id]).to eq item1.id
       expect(index_item1[:name]).to eq item1.name
