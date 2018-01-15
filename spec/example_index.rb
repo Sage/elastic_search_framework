@@ -12,7 +12,7 @@ class ExampleIndexWithId
 
   index name: 'example_index'
 
-  id :id
+  id :number
 
   mapping name: 'default', field: :name, type: :string, analyser: :not_analyzed
 

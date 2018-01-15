@@ -49,8 +49,8 @@ RSpec.describe ElasticSearchFramework::Repository do
 
   describe '#CRUD' do
     before do
-      ExampleIndex.delete
-      ExampleIndex.create
+      ExampleIndexWithId.delete
+      ExampleIndexWithId.create
     end
 
     it 'should create, read and delete an index document' do
@@ -71,7 +71,7 @@ RSpec.describe ElasticSearchFramework::Repository do
     end
 
     after do
-      ExampleIndex.delete
+      ExampleIndexWithId.delete
     end
   end
 

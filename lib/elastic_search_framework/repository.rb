@@ -14,7 +14,7 @@ module ElasticSearchFramework
 
       unless is_valid_response?(response.code)
         raise ElasticSearchFramework::Exceptions::IndexError.new(
-            "An error occurred setting an index document. Response: #{response.body}"
+            "An error occurred setting an index document. Response: #{response.body} | Code: #{response.code}"
         )
       end
       return true

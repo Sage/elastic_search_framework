@@ -4,7 +4,8 @@ RSpec.describe ElasticSearchFramework::Index do
     it 'should return the index details' do
       expect(ExampleIndex.description).to be_a(Hash)
       expect(ExampleIndex.description[:name]).to eq 'example_index'
-      expect(ExampleIndexWithId.description[:id]).to eq :id
+      expect(ExampleIndex.description[:id]).to eq :id
+      expect(ExampleIndexWithId.description[:id]).to eq :number
       expect(ExampleIndexWithShard.description[:shards]).to eq 1
     end
   end
