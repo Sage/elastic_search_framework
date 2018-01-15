@@ -138,7 +138,7 @@ module ElasticSearchFramework
     def description
       hash = self.instance_variable_get(:@elastic_search_index_def)
       if instance_variable_defined?(:@elastic_search_index_id)
-        hash[:id] = self.instance_variable_get(@elastic_search_index_id)
+        hash[:id] = self.instance_variable_get(:@elastic_search_index_id)
       else
         hash[:id] = :id
       end

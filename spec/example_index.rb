@@ -7,6 +7,17 @@ class ExampleIndex
 
 end
 
+class ExampleIndexWithId
+  extend ElasticSearchFramework::Index
+
+  index name: 'example_index'
+
+  id :id
+
+  mapping name: 'default', field: :name, type: :string, analyser: :not_analyzed
+
+end
+
 class ExampleIndexWithShard
   extend ElasticSearchFramework::Index
 
