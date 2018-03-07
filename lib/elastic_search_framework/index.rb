@@ -64,7 +64,12 @@ module ElasticSearchFramework
       end
 
       unless is_valid_response?(response.code)
-        raise ElasticSearchFramework::Exceptions::IndexError.new("[#{self}] - Failed to put index. Payload: #{payload} | Response: #{response.body}")
+        if response.body.dig(:error, :root_cause, 0, :type) == 'index_already_exists_exception'
+          # We get here because the `exists?` check in #create is non-atomic
+          ElasticSearchFramework.logger.warn "[#{self.class}] - Failed to create preexisting index. | Response: #{response.body}"
+        else
+          raise ElasticSearchFramework::Exceptions::IndexError.new("[#{self}] - Failed to put index. Payload: #{payload} | Response: #{response.body}")
+        end
       end
       true
     end
