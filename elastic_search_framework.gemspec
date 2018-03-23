@@ -7,7 +7,7 @@ Gem::Specification.new do |spec|
   spec.name          = "elastic_search_framework"
   spec.version       = ElasticSearchFramework::VERSION
   spec.authors       = ["vaughanbrittonsage"]
-  spec.email         = ["vaughanbritton@gmail.com"]
+  spec.email         = ["vaughan.britton@sage.com"]
 
   spec.summary       = 'A lightweight framework to for working with elastic search.'
   spec.description   = 'A lightweight framework to for working with elastic search.'
