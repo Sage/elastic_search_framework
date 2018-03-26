@@ -1,14 +1,15 @@
-require "rubygems"
+require 'rubygems'
 require 'bundler'
-require 'elastic_search_framework'
-require_relative '../spec/test_item.rb'
-require_relative '../spec/example_index'
-require 'pry'
 
 require 'simplecov'
 SimpleCov.start do
   add_filter '/spec/'
 end
+
+require 'elastic_search_framework'
+require_relative '../spec/test_item.rb'
+require_relative '../spec/example_index'
+require 'pry'
 
 RSpec.configure do |config|
   config.expect_with :rspec do |expectations|
