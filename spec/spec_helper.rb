@@ -1,5 +1,5 @@
 require "rubygems"
-require "bundler"
+require 'bundler'
 require 'elastic_search_framework'
 require_relative '../spec/test_item.rb'
 require_relative '../spec/example_index'
@@ -23,5 +23,5 @@ RSpec.configure do |config|
 end
 
 ElasticSearchFramework.logger.level = Logger::ERROR
-ElasticSearchFramework.host = 'http://elasticsearch'
-ElasticSearchFramework.port = 9200
+ElasticSearchFramework.host = ENV.fetch('ELASTIC_SEARCH_HOST', 'http://elasticsearch')
+ElasticSearchFramework.port = ENV.fetch('ELASTIC_SEARCH_PORT', '9200')

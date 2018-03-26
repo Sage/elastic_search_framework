@@ -1,14 +1,14 @@
+require 'connection_pool'
+require 'date'
 require 'hash_kit'
 require 'json'
-require 'connection_pool'
+require 'net/http'
 require_relative 'elastic_search_framework/version'
 require_relative 'elastic_search_framework/logger'
 require_relative 'elastic_search_framework/exceptions'
 require_relative 'elastic_search_framework/repository'
 require_relative 'elastic_search_framework/index'
 require_relative 'elastic_search_framework/query'
-
-require 'date'
 
 module ElasticSearchFramework
   def self.namespace=(value)
