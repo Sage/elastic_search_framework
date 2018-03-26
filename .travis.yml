@@ -4,7 +4,15 @@ rvm:
 services:
   - elasticsearch
 before_script:
-  # Ensure elastic search is ready
   - sleep 10
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64
+    > ./cc-test-reporter
+  - chmod +x ./cc-test-reporter
+  - "./cc-test-reporter before-build"
+after_script:
+  - "./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT"
 env:
-  - ELASTIC_SEARCH_HOST=http://localhost
+  matrix:
+    - ELASTIC_SEARCH_HOST=http://localhost
+  global:
+    secure: eXmT4US7Z9mssBS1KRKurR/helOMxBdUiwZVwgVnYDwa49QEJJZSdZaisxv4seIepbQAlfWx874Q3xW1GKw6BBlpPDx00/yxw9REwjbtjwaAqESR4g4KHoy+9kNnmbvvElCmNb/yxTNhhN6sJuLEjNWMAT+t85toh/8gS8odFWFlRZaILMybKQr5Gt7kxWlAiKKdrsB2BQMFBFt1rxZj72ZNIOXJ1RZQi195ZV8sbZTBf83aQtfnsKwJqiXvT57nnHALkA4MoYpgYehv0b3lScESp583KMkYHM8NoDvsMp/aMZYprw/UCkPy4pmJWf2l9wvnTgPOEylTOrGl/m61/WrjuHIAVyrsH7VgnZ399f72pQLCNYfifuXKFoOx9BtrBx8aaqFLx4luiTLNboZOADyXeHgMLh5HepxOWTa0CHcSSCMKBSLKf181c5sodtcFzvsHUPM+HNKqekUsyk5HndFerJeKVPh/ZJvLvaohrKwDBc40kL6i6JgyrAGCa78njawIKXQZlHr8S+UgPji39HwA61Hu+JyYTIKTCHSN07+MMU85vmtjV1MOEAKQLJZdy/Yx5+yVeMGIMDs7MkhRLMe91s02VhV2O3LRYlpleWfoZgEOQni3vy8u9c4P1ma3CT4QFa53OQ+amWXta+HdJ5PIUm6fZJYbkssXliotEVg=
