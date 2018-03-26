@@ -1,18 +1,26 @@
 language: ruby
 rvm:
-  - 2.3.0
+- 2.3.0
 services:
-  - elasticsearch
+- elasticsearch
 before_script:
-  - sleep 10
-  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64
-    > ./cc-test-reporter
-  - chmod +x ./cc-test-reporter
-  - "./cc-test-reporter before-build"
+- sleep 10
+- curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64
+  > ./cc-test-reporter
+- chmod +x ./cc-test-reporter
+- "./cc-test-reporter before-build"
 after_script:
-  - "./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT"
+- "./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT"
 env:
   matrix:
-    - ELASTIC_SEARCH_HOST=http://localhost
+  - ELASTIC_SEARCH_HOST=http://localhost
   global:
     secure: eXmT4US7Z9mssBS1KRKurR/helOMxBdUiwZVwgVnYDwa49QEJJZSdZaisxv4seIepbQAlfWx874Q3xW1GKw6BBlpPDx00/yxw9REwjbtjwaAqESR4g4KHoy+9kNnmbvvElCmNb/yxTNhhN6sJuLEjNWMAT+t85toh/8gS8odFWFlRZaILMybKQr5Gt7kxWlAiKKdrsB2BQMFBFt1rxZj72ZNIOXJ1RZQi195ZV8sbZTBf83aQtfnsKwJqiXvT57nnHALkA4MoYpgYehv0b3lScESp583KMkYHM8NoDvsMp/aMZYprw/UCkPy4pmJWf2l9wvnTgPOEylTOrGl/m61/WrjuHIAVyrsH7VgnZ399f72pQLCNYfifuXKFoOx9BtrBx8aaqFLx4luiTLNboZOADyXeHgMLh5HepxOWTa0CHcSSCMKBSLKf181c5sodtcFzvsHUPM+HNKqekUsyk5HndFerJeKVPh/ZJvLvaohrKwDBc40kL6i6JgyrAGCa78njawIKXQZlHr8S+UgPji39HwA61Hu+JyYTIKTCHSN07+MMU85vmtjV1MOEAKQLJZdy/Yx5+yVeMGIMDs7MkhRLMe91s02VhV2O3LRYlpleWfoZgEOQni3vy8u9c4P1ma3CT4QFa53OQ+amWXta+HdJ5PIUm6fZJYbkssXliotEVg=
+deploy:
+  provider: rubygems
+  api_key:
+    secure: B6luiGPonvNcFC1Cb7S4tsrkSHxfn3R0QNE31Xx6JHXZ+Y6/EsJ7mjgJa1xUXtWz89YT6FaGDJ9wynF0a1xFxtIThcPPS3BNSQNPCmKZpHsy15BsTVYFBfyAyTmB3tUNQwCnjKrIXakfc7PrkPjf1A0wk9Y1nQ/ht49Mx3BoucYfc3IVOcsptV+Ik3a+oI36UOIV3X5sHl3TZkoB0U6SKOeNBZ/U/mJqeAUut8s0Jt1cHQOKcLyXInk9Ye75Vs6UYCFwpAWzNyP3JjGNKZMCeGx6couPSBVWutYe9zYPgiEpdlx1tvpopWQnGY3UipG+CJt7u3xzxBw3RXYHvJWEqQqJ1qSuovD3U4d8UcXsBLX4w8egLyDYIbYeTu3xU5PEpB2iGxb01vZ5ilNyvNyo3NSa9oIQkd8bTx8SYssbehoxJnGHW/G85ET0NV4d+nlQcOXHf6usQ2Ul4nDMmEDcTgnS3xedEBo9wEUePldn2sFPrjA0suf8GXnukFsCYhGv7eKYUGkByx1T567SWkENihxeEv4+8SkRb3aglxFNCcif3khA2P6eS7WTqgnIEhfoHj62Kk55F/a3YLbq741vn/ATU3GFPncK8L1J8j84JzUoOBIO1deG3BC1dawGwpq8ctuL5BiUjh2gbssOZHDbL263Y2qMLQUjA22toZBkMCc=
+  gem: elastic_search_framework
+  on:
+    tags: true
+    repo: Sage/elastic_search_framework
