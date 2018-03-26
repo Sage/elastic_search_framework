@@ -1,0 +1,10 @@
+language: ruby
+rvm:
+  - 2.3.0
+services:
+  - elasticsearch
+before_script:
+  # Ensure elastic search is ready
+  - sleep 10
+env:
+  - ELASTIC_SEARCH_HOST=http://localhost

@@ -1,5 +1,7 @@
 # Elastic Search Framework
 
+[![Build Status](https://travis-ci.org/Sage/elastic_search_framework.svg?branch=master)](https://travis-ci.org/Sage/elastic_search_framework)
+
 Welcome to Elastic Search Framework, this is a light weight framework that provides managers to help with interacting with Elastic Search.
 
 ## Installation
