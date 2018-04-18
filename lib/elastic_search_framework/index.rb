@@ -18,7 +18,7 @@ module ElasticSearchFramework
       end
     end
 
-    def mapping(name:, field:, type:, analyser:)
+    def mapping(name:, field:, type:, index:)
 
       unless instance_variable_defined?(:@elastic_search_index_mappings)
         instance_variable_set(:@elastic_search_index_mappings, {})
@@ -30,7 +30,7 @@ module ElasticSearchFramework
         mappings[name] = {}
       end
 
-      mappings[name][field] = { type: type, analyser: analyser}
+      mappings[name][field] = { type: type, index: index}
 
       instance_variable_set(:@elastic_search_index_mappings, mappings)
 
@@ -127,7 +127,7 @@ module ElasticSearchFramework
           mappings[name].keys.each do |field|
             payload[:mappings][name][:properties][field] = {
                 type: mappings[name][field][:type],
-                index: mappings[name][field][:analyser]
+                index: mappings[name][field][:index]
             }
           end
         end

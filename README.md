@@ -29,41 +29,43 @@ The namespace is used to set the prefix applied to all table and index names.
 > Optional.
 
     elasticsearchFramework.namespace = 'uat'
-    
+
 > With a namespace of 'uat' and a table name of 'people', the resulting table name would be 'uat.people'
-    
+
 ### #namespace_delimiter
 This is the delimiter used to join the namespace prefix to table/index names.
 
 > DEFAULT = '.'
 
     elasticsearchFramework.namespace_delimiter = '-'
-    
+
 ### #host
 This is used to set the host that should be used for all connection actions.
 
     ElasticSearchFramework.host = 'http://elasticsearch'
-    
+
 ### #port
 This is used to set the port that should be used for all connection actions.
 
     ElasticSearchFramework.port = 9200
-    
+
 > DEFAULT = 9200
 
 # Index
 To define an index within elasticsearch, create an index definition class that extends from the `ElasticSearchFramework::Index` module.
 
-    class ExampleIndex
-      extend ElasticSearchFramework::Index
-    
-      index name: 'example_index', shards: 1
-      
-      id :example_id
-      
-      mapping name: 'default', field: :name, type: :string, analyser: :not_analyzed    
-    end
-    
+```ruby
+class ExampleIndex
+  extend ElasticSearchFramework::Index
+
+  index name: 'example_index', shards: 1
+
+  id :example_id
+
+  mapping name: 'default', field: :name, type: :keyword, index: true
+end
+```
+
 **attributes**
 
  - **index** [Hash] [Required] This is used to specify the name of the index, and the number of shards the index should use.
@@ -74,24 +76,24 @@ To define an index within elasticsearch, create an index definition class that e
 This method is called to create the index definition within an elastic search instance.
 
     ExampleIndex.create
- 
- 
+
+
 ## #drop
 This method is called to drop the index from an elastic search instance.
 
     ExampleIndex.drop
-  
+
 ## #exists?
 This method is called to determine if an index exists in a elastic search instance.
 
     ExampleIndex.exists?
-    
+
 
 ## #put_item
 This method is called to store a document/entity within the index.
 
     ExampleIndex.put_item(item: document)
-    
+
 **Params**
 
  - **item** [Object] [Required] This is the document/entity you want to store in the index.
@@ -101,7 +103,7 @@ This method is called to store a document/entity within the index.
 This method is called to fetch a document from within the index.
 
     ExampleIndex.get_item(id: document_id)
-    
+
 **Params**
 
  - **id** [String/Integer] [Required] This is the unique identifier of the document/entity you want to fetch from the index.
@@ -111,7 +113,7 @@ This method is called to fetch a document from within the index.
 This method is called to delete a document from within the index.
 
     ExampleIndex.delete_item(id: document_id)
-    
+
 **Params**
 
  - **id** [String/Integer] [Required] This is the unique identifier of the document/entity you want to delete from the index.
@@ -125,17 +127,17 @@ This method is called to query the index for a collection of items.
 The query is then built up using method chaining e.g:
 
     query = ExampleIndex.query.gender.eq('male').and.age.gt(18)
-    
+
 The above query chain translates into:
 
     FROM ExampleIndex WHERE gender == 'male' AND age > 18
-     
+
 To execute the query you can then call `#execute` on the query:
 
     query.execute
-    
+
 > Due to method chaining, the #execute method can also be chained to the end of a query directly.
-    
+
 ### #execute
 This method is called to execute a query.
 
@@ -173,7 +175,7 @@ This method is called to check if a field exists within a query.
 ### #and
 This method is called to combine conditions together in a traditional `&&` method within a query.
 
-### #or 
+### #or
 This method is called to combine conditions together in a traditional `||` method within a query.
 
 ## Development
