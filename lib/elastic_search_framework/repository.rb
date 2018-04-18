@@ -7,6 +7,7 @@ module ElasticSearchFramework
 
       request = Net::HTTP::Put.new(uri.request_uri)
       request.body = JSON.dump(hash)
+      request.content_type = 'application/json'
 
       response = with_client do |client|
         client.request(request)
