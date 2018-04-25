@@ -178,6 +178,37 @@ This method is called to combine conditions together in a traditional `&&` metho
 ### #or
 This method is called to combine conditions together in a traditional `||` method within a query.
 
+## Testing
+
+To run the tests locally, we use Docker to provide both a Ruby and JRuby environment along with a reliable Redis container.
+
+### Setup Images:
+
+> This builds the Ruby docker image.
+
+```bash
+cd script
+./setup.sh
+```
+
+### Run Tests:
+
+> This executes the test suite.
+
+```bash
+cd script
+./test.sh
+```
+
+### Cleanup
+
+> This is used to clean down docker image created in the setup script.
+
+```bash
+cd script
+./cleanup.sh
+```
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
