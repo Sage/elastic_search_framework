@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe ElasticSearchFramework::Query do
 
   subject do
@@ -70,13 +72,21 @@ RSpec.describe ElasticSearchFramework::Query do
       results = ExampleIndex.query.number.gt_eq(15).execute
       expect(results.length).to eq 2
 
+      results = ExampleIndex.query.number.lt(15).execute
+      expect(results.length).to eq 2
+
+      results = ExampleIndex.query.number.lt_eq(15).execute
+      expect(results.length).to eq 3
+
       results = ExampleIndex.query.name.not_eq('john').execute
       expect(results.length).to eq 3
+
+      results = ExampleIndex.query.name.contains?('oh').execute
+      expect(results.length).to eq 1
     end
 
     after do
       ExampleIndex.delete
     end
   end
-
 end
