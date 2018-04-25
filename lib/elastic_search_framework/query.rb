@@ -23,7 +23,7 @@ module ElasticSearchFramework
     end
 
     def contains?(value)
-      condition(expression: ':', value: value)
+      condition(expression: ':', value: "*#{value}*")
       self
     end
 
@@ -91,11 +91,11 @@ module ElasticSearchFramework
           when :field
             @expression_string += ' ' + p[:value].to_s
           when :condition
-            @expression_string += p[:expression].to_s + format_value(p[:value])
+            @expression_string += p[:expression].to_s + p[:value].to_s
           when :exists
             @expression_string += ' _exists_:' + p[:field].to_s
           when :not_eq
-            @expression_string += ' NOT (' + p[:field].to_s + ':' + format_value(p[:value]) + ')'
+            @expression_string += ' NOT (' + p[:field].to_s + ':' + p[:value].to_s + ')'
           when :and
             @expression_string += ' AND'
           when :or
@@ -111,14 +111,5 @@ module ElasticSearchFramework
     def condition(expression:, value:)
       @parts << { type: :condition, expression: expression, value: value }
     end
-
-    def format_value(value)
-      result = value.to_s
-      if value.is_a?(String)
-        result = '"' + value + '"'
-      end
-      result
-    end
-
   end
 end

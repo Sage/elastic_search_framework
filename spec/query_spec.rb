@@ -7,7 +7,7 @@ RSpec.describe ElasticSearchFramework::Query do
   describe '#build' do
     it 'should build the expected query string' do
       subject.name.eq('fred').and.age.gt(18).and.gender.not_eq('male')
-      expect(subject.build).to eq 'name:"fred" AND age:>18 AND NOT (gender:"male")'
+      expect(subject.build).to eq 'name:fred AND age:>18 AND NOT (gender:male)'
     end
   end
 
