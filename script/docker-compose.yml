@@ -1,12 +1,21 @@
-elasticsearch:
-  image: bashell/alpine-elasticsearch
-  ports:
-    - "9200:9200"
+version: '2.1'
 
-testrunner:
-  image: sageone/elasticsearch_test_runner
-  container_name: test_runner
-  links:
-    - elasticsearch
-  volumes:
-    - ../:/elastic_search_framework
+services:
+  elasticsearch:
+    image: elasticsearch:alpine
+    container_name: elasticsearch
+    environment:
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ports:
+      - "9200:9200"
+
+  testrunner:
+    image: sage/elasticsearch_test_runner
+    container_name: test_runner
+    command: sh -c "while true; do echo 'Container is running..'; sleep 5; done"
+    environment:
+      - ELASTIC_SEARCH_HOST=http://elasticsearch
+    depends_on:
+      - elasticsearch
+    volumes:
+      - ../:/elastic_search_framework
