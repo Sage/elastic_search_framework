@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe ElasticSearchFramework::Query do
 
   subject do
@@ -7,7 +9,7 @@ RSpec.describe ElasticSearchFramework::Query do
   describe '#build' do
     it 'should build the expected query string' do
       subject.name.eq('fred').and.age.gt(18).and.gender.not_eq('male')
-      expect(subject.build).to eq 'name:"fred" AND age:>18 AND NOT (gender:"male")'
+      expect(subject.build).to eq 'name:fred AND age:>18 AND NOT (gender:male)'
     end
   end
 
@@ -70,13 +72,21 @@ RSpec.describe ElasticSearchFramework::Query do
       results = ExampleIndex.query.number.gt_eq(15).execute
       expect(results.length).to eq 2
 
+      results = ExampleIndex.query.number.lt(15).execute
+      expect(results.length).to eq 2
+
+      results = ExampleIndex.query.number.lt_eq(15).execute
+      expect(results.length).to eq 3
+
       results = ExampleIndex.query.name.not_eq('john').execute
       expect(results.length).to eq 3
+
+      results = ExampleIndex.query.name.contains?('oh').execute
+      expect(results.length).to eq 1
     end
 
     after do
       ExampleIndex.delete
     end
   end
-
 end
