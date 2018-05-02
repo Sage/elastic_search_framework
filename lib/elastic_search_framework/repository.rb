@@ -83,8 +83,8 @@ module ElasticSearchFramework
       end
     end
 
-    def json_query(index:, json_query:, type: 'default', count: false)
-      uri = URI("#{host}/#{index.full_name}/#{type}/_search")
+    def json_query(index_name:, json_query:, type: 'default')
+      uri = URI("#{host}/#{index_name}/#{type}/_search")
 
       request = Net::HTTP::Get.new(uri.request_uri)
       request.body = json_query
@@ -95,12 +95,7 @@ module ElasticSearchFramework
 
       if is_valid_response?(response.code)
         result = JSON.parse(response.body)
-        hash_helper.indifferent!(result)
-        if count
-          return result[:hits][:total]
-        else
-          return result[:hits][:total] > 0 ? result[:hits][:hits] : []
-        end
+        return result['hits']
       else
         raise ElasticSearchFramework::Exceptions::IndexError.new("An error occurred executing an index query. Response: #{response.body}")
       end
