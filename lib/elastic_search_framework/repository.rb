@@ -97,7 +97,6 @@ module ElasticSearchFramework
         result = JSON.parse(response.body)
         return result['hits']
       else
-        puts response.body
         raise(
           ElasticSearchFramework::Exceptions::IndexError,
           "An error occurred executing an index query. Response: #{response.body}"
