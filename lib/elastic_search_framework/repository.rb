@@ -13,7 +13,7 @@ module ElasticSearchFramework
         client.request(request)
       end
 
-      unless is_valid_response?(response.code)
+      unless valid_response?(response.code)
         raise ElasticSearchFramework::Exceptions::IndexError.new(
             "An error occurred setting an index document. Response: #{response.body} | Code: #{response.code}"
         )
@@ -30,7 +30,7 @@ module ElasticSearchFramework
         client.request(request)
       end
 
-      if is_valid_response?(response.code)
+      if valid_response?(response.code)
         result = JSON.load(response.body)
         hash_helper.indifferent!(result)
         return result
@@ -52,7 +52,7 @@ module ElasticSearchFramework
         client.request(request)
       end
 
-      if is_valid_response?(response.code) || Integer(response.code) == 404
+      if valid_response?(response.code) || Integer(response.code) == 404
         return true
       else
         raise ElasticSearchFramework::Exceptions::IndexError.new(
@@ -70,7 +70,7 @@ module ElasticSearchFramework
         client.request(request)
       end
 
-      if is_valid_response?(response.code)
+      if valid_response?(response.code)
         result = JSON.parse(response.body)
         hash_helper.indifferent!(result)
         if count
@@ -93,11 +93,15 @@ module ElasticSearchFramework
         client.request(request)
       end
 
-      if is_valid_response?(response.code)
+      if valid_response?(response.code)
         result = JSON.parse(response.body)
         return result['hits']
       else
-        raise ElasticSearchFramework::Exceptions::IndexError.new("An error occurred executing an index query. Response: #{response.body}")
+        puts response.body
+        raise(
+          ElasticSearchFramework::Exceptions::IndexError,
+          "An error occurred executing an index query. Response: #{response.body}"
+        )
       end
     end
 
@@ -121,8 +125,8 @@ module ElasticSearchFramework
       @read_timeout ||= Integer(ENV['CONNECTION_OPEN_TIMEOUT'] ||  1)
     end
 
-    def is_valid_response?(status)
-      [200,201,202].include?(Integer(status))
+    def valid_response?(status)
+      [200, 201, 202].include?(Integer(status))
     end
 
     def host

@@ -1,3 +1,6 @@
+## v1.2.0
+* Added a json_query method to provide the ability to query ElasticSearch with a json object.
+
 ## v1.1.0
 
 * Fix the eq and contains? queries.

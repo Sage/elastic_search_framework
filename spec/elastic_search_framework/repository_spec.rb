@@ -121,6 +121,116 @@ RSpec.describe ElasticSearchFramework::Repository do
     end
   end
 
+  describe '#json_query' do
+    before do
+      ExampleIndex.delete
+      ExampleIndex.create
+
+      subject.set(index: ExampleIndex, entity: item1)
+      subject.set(index: ExampleIndex, entity: item2)
+      subject.set(index: ExampleIndex, entity: item3)
+      subject.set(index: ExampleIndex, entity: item4)
+      sleep 1
+    end
+
+    it 'returns the expected query results' do
+      result_query = {
+        'query' => {
+          'bool' => {
+            'must' => {
+              'match' => {
+                'name' => 'fred'
+              }
+            }
+          }
+        }
+      }
+      results = subject.json_query(index_name: 'test_example_index', json_query: result_query.to_json)
+      expect(results['hits'].length).to eq 1
+      expect(results['hits'][0]['_source']['name']).to eq item1.name
+      expect(results['hits'][0]['_source']['id']).to eq item1.id
+      expect(results['hits'][0]['_source']['timestamp']).to eq item1.timestamp
+      expect(results['hits'][0]['_source']['number']).to eq item1.number
+
+      example_one = {
+        'query' => {
+          'range' => {
+            'number' => {
+              'gt' => 5
+            }
+          }
+        }
+      }
+      example_two = {
+        'query' => {
+          'range' => {
+            'number' => {
+              'gte' => 15
+            }
+          }
+        }
+      }
+      example_three = {
+        'query' => {
+          'bool' => {
+            'must_not' => {
+              'match' => {
+                'name' => 'fred'
+              }
+            }
+          }
+        }
+      }
+      results = subject.json_query(index_name: 'test_example_index', json_query: example_one.to_json)
+      expect(results['hits'].length).to eq 3
+
+      results = subject.json_query(index_name: 'test_example_index', json_query: example_two.to_json)
+      expect(results['hits'].length).to eq 2
+
+      results = subject.json_query(index_name: 'test_example_index', json_query: example_three.to_json)
+      expect(results['hits'].length).to eq 3
+    end
+
+    context 'when an error occurs' do
+      it 'raises an ElasticSearchFramework::Exceptions::IndexError' do
+        example = {
+          'query' => {
+            'bool' => {
+              'must_not' => {
+                'name' => 'fred'
+              }
+            }
+          }
+        }
+
+        response_body = {
+          'error' => {
+            'root_cause' => [
+              {
+                'type' => 'parsing_exception',
+                'reason' => '[name] query malformed, no start_object after query name',
+                'line' => 1,
+                'col' => 38
+              }
+            ],
+            'type' => 'parsing_exception',
+            'reason' => '[name] query malformed, no start_object after query name',
+            'line' => 1,
+            'col' => 38
+          },
+          'status' => 400
+        }
+
+        expect{ subject.json_query(index_name: 'test_example_index', json_query: example.to_json) }
+          .to raise_error(ElasticSearchFramework::Exceptions::IndexError, "An error occurred executing an index query. Response: #{response_body.to_json}")
+      end
+    end
+
+    after do
+      ExampleIndex.delete
+    end
+  end
+
   describe '#host' do
     it 'should return the expected host based on default host & port values' do
       expect(subject.host).to eq "#{ElasticSearchFramework.host}:#{ElasticSearchFramework.port}"
