@@ -1,3 +1,6 @@
+## v1.3.0
+* Resolve JSON query to work with ES6 by adding the request content type.
+
 ## v1.2.0
 * Added a json_query method to provide the ability to query ElasticSearch with a json object.
 
