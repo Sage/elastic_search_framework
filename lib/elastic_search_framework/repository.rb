@@ -87,6 +87,7 @@ module ElasticSearchFramework
       uri = URI("#{host}/#{index_name}/#{type}/_search")
 
       request = Net::HTTP::Get.new(uri.request_uri)
+      request.content_type = 'application/json'
       request.body = json_query
 
       response = with_client do |client|
