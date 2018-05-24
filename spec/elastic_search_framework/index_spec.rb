@@ -9,6 +9,31 @@ RSpec.describe ElasticSearchFramework::Index do
     end
   end
 
+  describe '#index' do
+    before { ExampleIndex.create unless ExampleIndex.exists? }
+    context 'when the instance variable is not defined' do
+      before { allow(ExampleIndex).to receive(:instance_variable_defined?).and_return(true) }
+      it 'raises an index error' do
+        expect { ExampleIndex.index(name: 'test') }.to raise_error(
+          ElasticSearchFramework::Exceptions::IndexError,
+          "[Class] - Duplicate index description. Name: test | Shards: ."
+        )
+      end
+    end
+  end
+
+  describe '#id' do
+    context 'when the instance variable is not defined' do
+      before { allow(ExampleIndex).to receive(:instance_variable_defined?).and_return(true) }
+      it 'raises an index error' do
+        expect { ExampleIndex.id('name') }.to raise_error(
+          ElasticSearchFramework::Exceptions::IndexError,
+          "[Class] - Duplicate index id. Field: name."
+        )
+      end
+    end
+  end
+
   describe '#full_name' do
     let(:namespace) { 'uat' }
     let(:namespace_delimiter) { '.' }
@@ -18,6 +43,14 @@ RSpec.describe ElasticSearchFramework::Index do
     end
     it 'should return the full index name including namespace and delimiter' do
       expect(ExampleIndex.full_name).to eq "#{ElasticSearchFramework.namespace}#{ElasticSearchFramework.namespace_delimiter}#{ExampleIndex.description[:name]}"
+    end
+
+    context 'when the namespace is nil' do
+      before { ElasticSearchFramework.namespace = nil }
+
+      it 'returns the description name downcased' do
+        expect(ExampleIndex.full_name).to eq 'example_index'
+      end
     end
   end
 
