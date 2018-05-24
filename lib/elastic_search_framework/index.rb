@@ -59,7 +59,7 @@ module ElasticSearchFramework
       end
 
       unless is_valid_response?(response.code)
-        if JSON.parse(response.body).dig(:error, :root_cause, 0, :type) == 'index_already_exists_exception'
+        if JSON.parse(response.body, symbolize_names: true).dig(:error, :root_cause, 0, :type) == 'index_already_exists_exception'
           # We get here because the `exists?` check in #create is non-atomic
           ElasticSearchFramework.logger.warn "[#{self.class}] - Failed to create preexisting index. | Response: #{response.body}"
         else

@@ -1,5 +1,4 @@
 RSpec.describe ElasticSearchFramework::Index do
-
   describe '#description' do
     it 'should return the index details' do
       expect(ExampleIndex.description).to be_a(Hash)
@@ -116,6 +115,48 @@ RSpec.describe ElasticSearchFramework::Index do
     end
   end
 
+  describe '#put' do
+    let(:payload) { {} }
+    context 'when there is a valid response' do
+      before { allow(ExampleIndex).to receive(:is_valid_response?).and_return(true) }
+
+      it 'returns true' do
+        ExampleIndex.create
+        expect(ExampleIndex.put(payload: payload)).to eq true
+      end
+    end
+
+    context 'when there is not a valid response' do
+      before { allow(ExampleIndex).to receive(:is_valid_response?).and_return(false) }
+
+      context 'when the error is "index_already_exists_exception"' do
+        let(:response_body) { { error: { root_cause: [{ type: 'index_already_exists_exception' }] } } }
+        let(:request) { double }
+
+        before { ExampleIndex.delete if ExampleIndex.exists? }
+        it 'returns true' do
+          allow(request).to receive(:body).and_return(response_body.to_json)
+          allow(request).to receive(:code).and_return(404)
+          allow_any_instance_of(Net::HTTP).to receive(:request).and_return(request)
+          expect(ExampleIndex.put(payload: payload)).to eq true
+        end
+      end
+
+      context 'when the error is not "index_already_exists_exception"' do
+        let(:response_body) { { error: { root_cause: [{ type: 'foo' }] } } }
+        let(:request) { double }
+        it 'raises an IndexError' do
+          allow(request).to receive(:body).and_return(response_body.to_json)
+          allow(request).to receive(:code).and_return(404)
+          allow_any_instance_of(Net::HTTP).to receive(:request).and_return(request)
+          expect { ExampleIndex.put(payload: payload) }.to raise_error(
+            ElasticSearchFramework::Exceptions::IndexError
+          )
+        end
+      end
+    end
+  end
+
   describe '#is_valid_response?' do
     let(:code) { 200 }
     context 'when a 200 response code is returned' do
@@ -204,5 +245,4 @@ RSpec.describe ElasticSearchFramework::Index do
       ExampleIndex.delete_item(id: id, type: type)
     end
   end
-
 end
