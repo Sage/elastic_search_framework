@@ -46,18 +46,40 @@ RSpec.describe ElasticSearchFramework::Index do
   end
 
   describe '#create' do
-    before do
-      if ExampleIndex.exists?
+    context 'when index is valid and does not exist' do
+      before { ExampleIndex.delete if ExampleIndex.exists? }
+
+      it 'should create an index' do
+        expect(ExampleIndex.exists?).to be false
+        ExampleIndex.create
+        expect(ExampleIndex.exists?).to be true
+      end
+
+      after do
         ExampleIndex.delete
       end
     end
-    it 'should create an index' do
-      expect(ExampleIndex.exists?).to be false
-      ExampleIndex.create
-      expect(ExampleIndex.exists?).to be true
+
+    context 'when index is not valid' do
+      before { allow(ExampleIndex).to receive(:valid?).and_return(false) }
+
+      it 'raises an error' do
+        expect(ExampleIndex.exists?).to be false
+        expect { ExampleIndex.create }.to raise_error(
+          ElasticSearchFramework::Exceptions::IndexError,
+          '[Class] - Invalid Index description specified.'
+        )
+      end
     end
-    after do
-      ExampleIndex.delete
+
+    context 'when index is valid but already exists' do
+      before { ExampleIndex.delete if ExampleIndex.exists? }
+
+      it 'does not try to create a new index' do
+        allow(ExampleIndex).to receive(:exists?).and_return(true)
+        expect(ExampleIndex).not_to receive(:put)
+        ExampleIndex.create
+      end
     end
   end
 
