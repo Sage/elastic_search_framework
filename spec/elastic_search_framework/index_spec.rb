@@ -1,5 +1,4 @@
 RSpec.describe ElasticSearchFramework::Index do
-
   describe '#description' do
     it 'should return the index details' do
       expect(ExampleIndex.description).to be_a(Hash)
@@ -7,6 +6,31 @@ RSpec.describe ElasticSearchFramework::Index do
       expect(ExampleIndex.description[:id]).to eq :id
       expect(ExampleIndexWithId.description[:id]).to eq :number
       expect(ExampleIndexWithShard.description[:shards]).to eq 1
+    end
+  end
+
+  describe '#index' do
+    before { ExampleIndex.create unless ExampleIndex.exists? }
+    context 'when the instance variable is not defined' do
+      before { allow(ExampleIndex).to receive(:instance_variable_defined?).and_return(true) }
+      it 'raises an index error' do
+        expect { ExampleIndex.index(name: 'test') }.to raise_error(
+          ElasticSearchFramework::Exceptions::IndexError,
+          "[Class] - Duplicate index description. Name: test | Shards: ."
+        )
+      end
+    end
+  end
+
+  describe '#id' do
+    context 'when the instance variable is not defined' do
+      before { allow(ExampleIndex).to receive(:instance_variable_defined?).and_return(true) }
+      it 'raises an index error' do
+        expect { ExampleIndex.id('name') }.to raise_error(
+          ElasticSearchFramework::Exceptions::IndexError,
+          "[Class] - Duplicate index id. Field: name."
+        )
+      end
     end
   end
 
@@ -19,6 +43,14 @@ RSpec.describe ElasticSearchFramework::Index do
     end
     it 'should return the full index name including namespace and delimiter' do
       expect(ExampleIndex.full_name).to eq "#{ElasticSearchFramework.namespace}#{ElasticSearchFramework.namespace_delimiter}#{ExampleIndex.description[:name]}"
+    end
+
+    context 'when the namespace is nil' do
+      before { ElasticSearchFramework.namespace = nil }
+
+      it 'returns the description name downcased' do
+        expect(ExampleIndex.full_name).to eq 'example_index'
+      end
     end
   end
 
@@ -46,18 +78,40 @@ RSpec.describe ElasticSearchFramework::Index do
   end
 
   describe '#create' do
-    before do
-      if ExampleIndex.exists?
+    context 'when index is valid and does not exist' do
+      before { ExampleIndex.delete if ExampleIndex.exists? }
+
+      it 'should create an index' do
+        expect(ExampleIndex.exists?).to be false
+        ExampleIndex.create
+        expect(ExampleIndex.exists?).to be true
+      end
+
+      after do
         ExampleIndex.delete
       end
     end
-    it 'should create an index' do
-      expect(ExampleIndex.exists?).to be false
-      ExampleIndex.create
-      expect(ExampleIndex.exists?).to be true
+
+    context 'when index is not valid' do
+      before { allow(ExampleIndex).to receive(:valid?).and_return(false) }
+
+      it 'raises an error' do
+        expect(ExampleIndex.exists?).to be false
+        expect { ExampleIndex.create }.to raise_error(
+          ElasticSearchFramework::Exceptions::IndexError,
+          '[Class] - Invalid Index description specified.'
+        )
+      end
     end
-    after do
-      ExampleIndex.delete
+
+    context 'when index is valid but already exists' do
+      before { ExampleIndex.delete if ExampleIndex.exists? }
+
+      it 'does not try to create a new index' do
+        allow(ExampleIndex).to receive(:exists?).and_return(true)
+        expect(ExampleIndex).not_to receive(:put)
+        ExampleIndex.create
+      end
     end
   end
 
@@ -90,6 +144,48 @@ RSpec.describe ElasticSearchFramework::Index do
       end
       it 'should return false' do
         expect(ExampleIndex.exists?).to be false
+      end
+    end
+  end
+
+  describe '#put' do
+    let(:payload) { {} }
+    context 'when there is a valid response' do
+      before { allow(ExampleIndex).to receive(:is_valid_response?).and_return(true) }
+
+      it 'returns true' do
+        ExampleIndex.create
+        expect(ExampleIndex.put(payload: payload)).to eq true
+      end
+    end
+
+    context 'when there is not a valid response' do
+      before { allow(ExampleIndex).to receive(:is_valid_response?).and_return(false) }
+
+      context 'when the error is "index_already_exists_exception"' do
+        let(:response_body) { { error: { root_cause: [{ type: 'index_already_exists_exception' }] } } }
+        let(:request) { double }
+
+        before { ExampleIndex.delete if ExampleIndex.exists? }
+        it 'returns true' do
+          allow(request).to receive(:body).and_return(response_body.to_json)
+          allow(request).to receive(:code).and_return(404)
+          allow_any_instance_of(Net::HTTP).to receive(:request).and_return(request)
+          expect(ExampleIndex.put(payload: payload)).to eq true
+        end
+      end
+
+      context 'when the error is not "index_already_exists_exception"' do
+        let(:response_body) { { error: { root_cause: [{ type: 'foo' }] } } }
+        let(:request) { double }
+        it 'raises an IndexError' do
+          allow(request).to receive(:body).and_return(response_body.to_json)
+          allow(request).to receive(:code).and_return(404)
+          allow_any_instance_of(Net::HTTP).to receive(:request).and_return(request)
+          expect { ExampleIndex.put(payload: payload) }.to raise_error(
+            ElasticSearchFramework::Exceptions::IndexError
+          )
+        end
       end
     end
   end
@@ -182,5 +278,4 @@ RSpec.describe ElasticSearchFramework::Index do
       ExampleIndex.delete_item(id: id, type: type)
     end
   end
-
 end

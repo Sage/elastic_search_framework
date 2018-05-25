@@ -1,3 +1,11 @@
+## v1.4.0
+* Resolve JSON query to work with ES6 by adding the request content type.
+* Make the mapping method more flexible to allow more than just type and index to be passed for the mapping parameters/options.
+
+## v1.3.0
+* 1.3.0 was pushed and yanked from gem server.
+* Code did contain: Resolve JSON query to work with ES6 by adding the request content type.
+
 ## v1.2.0
 * Added a json_query method to provide the ability to query ElasticSearch with a json object.
 

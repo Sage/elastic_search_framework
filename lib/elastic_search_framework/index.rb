@@ -18,26 +18,21 @@ module ElasticSearchFramework
       end
     end
 
-    def mapping(name:, field:, type:, index:)
-
+    def mapping(name:, field:, **options)
       unless instance_variable_defined?(:@elastic_search_index_mappings)
         instance_variable_set(:@elastic_search_index_mappings, {})
       end
 
       mappings = instance_variable_get(:@elastic_search_index_mappings)
 
-      if mappings[name] == nil
-        mappings[name] = {}
-      end
+      mappings[name] = {} if mappings[name].nil?
 
-      mappings[name][field] = { type: type, index: index}
+      mappings[name][field] = options
 
       instance_variable_set(:@elastic_search_index_mappings, mappings)
-
     end
 
     def create
-
       if !valid?
         raise ElasticSearchFramework::Exceptions::IndexError.new("[#{self.class}] - Invalid Index description specified.")
       end
@@ -50,7 +45,6 @@ module ElasticSearchFramework
       payload = create_payload(description: description, mappings: mappings)
 
       put(payload: payload)
-
     end
 
     def put(payload:)
@@ -65,7 +59,7 @@ module ElasticSearchFramework
       end
 
       unless is_valid_response?(response.code)
-        if response.body.dig(:error, :root_cause, 0, :type) == 'index_already_exists_exception'
+        if JSON.parse(response.body, symbolize_names: true).dig(:error, :root_cause, 0, :type) == 'index_already_exists_exception'
           # We get here because the `exists?` check in #create is non-atomic
           ElasticSearchFramework.logger.warn "[#{self.class}] - Failed to create preexisting index. | Response: #{response.body}"
         else
@@ -112,12 +106,11 @@ module ElasticSearchFramework
 
       if description[:shards] != nil
         payload[:settings] = {
-            number_of_shards: Integer(description[:shards])
+          number_of_shards: Integer(description[:shards])
         }
       end
 
       if mappings.keys.length > 0
-
         payload[:mappings] = {}
 
         mappings.keys.each do |name|
@@ -125,10 +118,7 @@ module ElasticSearchFramework
               properties: {}
           }
           mappings[name].keys.each do |field|
-            payload[:mappings][name][:properties][field] = {
-                type: mappings[name][field][:type],
-                index: mappings[name][field][:index]
-            }
+            payload[:mappings][name][:properties][field] = mappings[name][field]
           end
         end
 
