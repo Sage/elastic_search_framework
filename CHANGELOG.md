@@ -1,5 +1,19 @@
-## v1.5.0
-* Add the ability to pass analysis options into the index. For example this allows you to define a normalizer or analyzer.
+## v2.0.0
+### Breaking change
+
+The index method no longer accepts shards as a parameter.
+This change follows the implementation of a new settings method allowing you to pass any number of settings objects to build out the index.
+
+Where the index method is currently being used as follows
+```
+index name: 'index_name', shards: 1
+```
+
+This should now look as follows.
+```
+index name 'index_name'
+settings name: :number_of_shards, payload: 1
+```
 
 ## v1.4.0
 * Resolve JSON query to work with ES6 by adding the request content type.

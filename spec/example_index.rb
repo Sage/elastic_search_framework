@@ -4,7 +4,6 @@ class ExampleIndex
   index name: 'example_index'
 
   mapping name: 'default', field: :name, type: :keyword, index: true
-
 end
 
 class ExampleIndexWithId
@@ -15,23 +14,17 @@ class ExampleIndexWithId
   id :number
 
   mapping name: 'default', field: :name, type: :keyword, index: true
-
 end
 
-class ExampleIndexWithShard
+class ExampleIndexWithSettings
   extend ElasticSearchFramework::Index
 
-  index name: 'example_index', shards: 1
+  index name: 'example_index'
 
-  mapping name: 'default', field: :name, type: :keyword, index: true
+  payload = { custom_normalizer: { type: 'custom', char_filter: [], filter: ['lowercase'] } }
 
-end
-
-class ExampleIndexWithAnalysis
-  extend ElasticSearchFramework::Index
-
-  index name: 'example_index', shards: 1
-  analysis type: :normalizer, payload: { custom_normalizer: { type: 'custom', char_filter: [], filter: ['lowercase'] } }
+  settings name: :number_of_shards, payload: 1
+  settings name: :analysis, type: :normalizer, payload: payload
   mapping name: 'default', field: :name, type: :keyword, index: true
 end
 

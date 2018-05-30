@@ -5,7 +5,6 @@ RSpec.describe ElasticSearchFramework::Index do
       expect(ExampleIndex.description[:name]).to eq 'example_index'
       expect(ExampleIndex.description[:id]).to eq :id
       expect(ExampleIndexWithId.description[:id]).to eq :number
-      expect(ExampleIndexWithShard.description[:shards]).to eq 1
     end
   end
 
@@ -16,7 +15,7 @@ RSpec.describe ElasticSearchFramework::Index do
       it 'raises an index error' do
         expect { ExampleIndex.index(name: 'test') }.to raise_error(
           ElasticSearchFramework::Exceptions::IndexError,
-          "[Class] - Duplicate index description. Name: test | Shards: ."
+          '[Class] - Duplicate index description. Name: test.'
         )
       end
     end
@@ -70,12 +69,12 @@ RSpec.describe ElasticSearchFramework::Index do
 
       it 'does not add analysis to the index' do
         ExampleIndex.create
-        expect(ExampleIndexWithAnalysis.get.dig('example_index', 'settings', 'index', 'analysis')).to be_nil
+        expect(ExampleIndexWithSettings.get.dig('example_index', 'settings', 'index', 'analysis')).to be_nil
       end
     end
 
     context 'when analysis is not nil' do
-      before { ExampleIndexWithAnalysis.delete if ExampleIndexWithAnalysis.exists? }
+      before { ExampleIndexWithSettings.delete if ExampleIndexWithSettings.exists? }
       let(:expected) do
         {
           'normalizer' => {
@@ -88,8 +87,9 @@ RSpec.describe ElasticSearchFramework::Index do
       end
 
       it 'adds analysis to the index' do
-        ExampleIndexWithAnalysis.create
-        expect(ExampleIndexWithAnalysis.get.dig('example_index', 'settings', 'index', 'analysis')).to eq(expected)
+        ExampleIndexWithSettings.create
+        expect(ExampleIndexWithSettings.get.dig('example_index', 'settings', 'index', 'number_of_shards')).to eq('1')
+        expect(ExampleIndexWithSettings.get.dig('example_index', 'settings', 'index', 'analysis')).to eq(expected)
       end
     end
   end

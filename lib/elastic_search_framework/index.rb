@@ -1,14 +1,12 @@
 module ElasticSearchFramework
   module Index
-    attr_accessor :index_analysis
+    attr_accessor :index_settings
 
-    def index(name:, shards: nil)
+    def index(name:)
       unless instance_variable_defined?(:@elastic_search_index_def)
-        instance_variable_set(:@elastic_search_index_def, {
-            name: "#{name}", shards: shards
-        })
+        instance_variable_set(:@elastic_search_index_def, name: "#{name}")
       else
-        raise ElasticSearchFramework::Exceptions::IndexError.new("[#{self.class}] - Duplicate index description. Name: #{name} | Shards: #{shards}.")
+        raise ElasticSearchFramework::Exceptions::IndexError.new("[#{self.class}] - Duplicate index description. Name: #{name}.")
       end
     end
 
@@ -43,8 +41,7 @@ module ElasticSearchFramework
         ElasticSearchFramework.logger.debug { "[#{self.class}] - Index already exists."}
         return
       end
-
-      payload = create_payload(description: description, mappings: mappings)
+      payload = create_payload
 
       put(payload: payload)
     end
@@ -103,29 +100,28 @@ module ElasticSearchFramework
       is_valid_response?(response.code) || Integer(response.code) == 404
     end
 
-    def analysis(type:, payload:)
-      self.index_analysis = {} if index_analysis.nil?
-      index_analysis[type] = payload
+    def settings(name:, type: nil, payload:)
+      self.index_settings = {} if index_settings.nil?
+      index_settings[name] = if type
+                               { type => payload }
+                             else
+                               payload
+                             end
     end
 
-    def create_payload(description:, mappings:)
-      payload = {}
-      payload[:settings] = {} if payload[:settings].nil?
-      payload[:settings][:number_of_shards] = Integer(description[:shards]) unless description[:shards].nil?
-      payload[:settings][:analysis] = index_analysis unless index_analysis.nil?
+    def create_payload
+      payload = { settings: {} }
+      payload[:settings] = index_settings unless index_settings.nil?
 
-      if mappings.keys.length > 0
+      unless mappings.keys.empty?
         payload[:mappings] = {}
 
         mappings.keys.each do |name|
-          payload[:mappings][name] = {
-              properties: {}
-          }
+          payload[:mappings][name] = { properties: {} }
           mappings[name].keys.each do |field|
             payload[:mappings][name][:properties][field] = mappings[name][field]
           end
         end
-
       end
 
       payload
