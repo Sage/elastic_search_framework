@@ -1,3 +1,6 @@
+## v1.5.0
+* Add the ability to pass analysis options into the index. For example this allows you to define a normalizer or analyzer.
+
 ## v1.4.0
 * Resolve JSON query to work with ES6 by adding the request content type.
 * Make the mapping method more flexible to allow more than just type and index to be passed for the mapping parameters/options.

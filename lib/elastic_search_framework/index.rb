@@ -1,5 +1,7 @@
 module ElasticSearchFramework
   module Index
+    attr_accessor :index_analysis
+
     def index(name:, shards: nil)
       unless instance_variable_defined?(:@elastic_search_index_def)
         instance_variable_set(:@elastic_search_index_def, {
@@ -101,14 +103,16 @@ module ElasticSearchFramework
       is_valid_response?(response.code) || Integer(response.code) == 404
     end
 
+    def analysis(type:, payload:)
+      self.index_analysis = {} if index_analysis.nil?
+      index_analysis[type] = payload
+    end
+
     def create_payload(description:, mappings:)
       payload = {}
-
-      if description[:shards] != nil
-        payload[:settings] = {
-          number_of_shards: Integer(description[:shards])
-        }
-      end
+      payload[:settings] = {} if payload[:settings].nil?
+      payload[:settings][:number_of_shards] = Integer(description[:shards]) unless description[:shards].nil?
+      payload[:settings][:analysis] = index_analysis unless index_analysis.nil?
 
       if mappings.keys.length > 0
         payload[:mappings] = {}

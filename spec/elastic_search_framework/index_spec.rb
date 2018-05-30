@@ -64,6 +64,36 @@ RSpec.describe ElasticSearchFramework::Index do
     end
   end
 
+  describe '#analysis' do
+    context 'when analysis is nil' do
+      before { ExampleIndex.delete if ExampleIndex.exists? }
+
+      it 'does not add analysis to the index' do
+        ExampleIndex.create
+        expect(ExampleIndexWithAnalysis.get.dig('example_index', 'settings', 'index', 'analysis')).to be_nil
+      end
+    end
+
+    context 'when analysis is not nil' do
+      before { ExampleIndexWithAnalysis.delete if ExampleIndexWithAnalysis.exists? }
+      let(:expected) do
+        {
+          'normalizer' => {
+            'custom_normalizer' => {
+              'filter' => ['lowercase'],
+              'type' => 'custom'
+            }
+          }
+        }
+      end
+
+      it 'adds analysis to the index' do
+        ExampleIndexWithAnalysis.create
+        expect(ExampleIndexWithAnalysis.get.dig('example_index', 'settings', 'index', 'analysis')).to eq(expected)
+      end
+    end
+  end
+
   describe '#valid?' do
     context 'for a valid index definition' do
       it 'should return true' do
