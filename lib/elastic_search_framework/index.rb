@@ -110,7 +110,7 @@ module ElasticSearchFramework
     end
 
     def create_payload
-      payload = { settings: {} }
+      payload = { }
       payload[:settings] = index_settings unless index_settings.nil?
 
       unless mappings.keys.empty?
