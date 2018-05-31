@@ -12,7 +12,7 @@ index name: 'index_name', shards: 1
 This should now look as follows.
 ```
 index name 'index_name'
-settings name: :number_of_shards, payload: 1
+settings name: :number_of_shards, value: 1
 ```
 
 ## v1.4.0

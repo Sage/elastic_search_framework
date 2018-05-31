@@ -100,12 +100,12 @@ module ElasticSearchFramework
       is_valid_response?(response.code) || Integer(response.code) == 404
     end
 
-    def settings(name:, type: nil, payload:)
+    def settings(name:, type: nil, value:)
       self.index_settings = {} if index_settings.nil?
       index_settings[name] = if type
-                               { type => payload }
+                               { type => value }
                              else
-                               payload
+                               value
                              end
     end
 

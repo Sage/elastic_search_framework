@@ -21,10 +21,10 @@ class ExampleIndexWithSettings
 
   index name: 'example_index'
 
-  payload = { custom_normalizer: { type: 'custom', char_filter: [], filter: ['lowercase'] } }
+  normalizer_value = { custom_normalizer: { type: 'custom', char_filter: [], filter: ['lowercase'] } }
 
-  settings name: :number_of_shards, payload: 1
-  settings name: :analysis, type: :normalizer, payload: payload
+  settings name: :number_of_shards, value: 1
+  settings name: :analysis, type: :normalizer, value: normalizer_value
   mapping name: 'default', field: :name, type: :keyword, index: true
 end
 
