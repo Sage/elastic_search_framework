@@ -1,12 +1,12 @@
 module ElasticSearchFramework
   module Index
-    def index(name:, shards: nil)
+    attr_accessor :index_settings
+
+    def index(name:)
       unless instance_variable_defined?(:@elastic_search_index_def)
-        instance_variable_set(:@elastic_search_index_def, {
-            name: "#{name}", shards: shards
-        })
+        instance_variable_set(:@elastic_search_index_def, name: "#{name}")
       else
-        raise ElasticSearchFramework::Exceptions::IndexError.new("[#{self.class}] - Duplicate index description. Name: #{name} | Shards: #{shards}.")
+        raise ElasticSearchFramework::Exceptions::IndexError.new("[#{self.class}] - Duplicate index description. Name: #{name}.")
       end
     end
 
@@ -41,8 +41,7 @@ module ElasticSearchFramework
         ElasticSearchFramework.logger.debug { "[#{self.class}] - Index already exists."}
         return
       end
-
-      payload = create_payload(description: description, mappings: mappings)
+      payload = create_payload
 
       put(payload: payload)
     end
@@ -101,27 +100,28 @@ module ElasticSearchFramework
       is_valid_response?(response.code) || Integer(response.code) == 404
     end
 
-    def create_payload(description:, mappings:)
-      payload = {}
+    def settings(name:, type: nil, value:)
+      self.index_settings = {} if index_settings.nil?
+      index_settings[name] = if type
+                               { type => value }
+                             else
+                               value
+                             end
+    end
 
-      if description[:shards] != nil
-        payload[:settings] = {
-          number_of_shards: Integer(description[:shards])
-        }
-      end
+    def create_payload
+      payload = { }
+      payload[:settings] = index_settings unless index_settings.nil?
 
-      if mappings.keys.length > 0
+      unless mappings.keys.empty?
         payload[:mappings] = {}
 
         mappings.keys.each do |name|
-          payload[:mappings][name] = {
-              properties: {}
-          }
+          payload[:mappings][name] = { properties: {} }
           mappings[name].keys.each do |field|
             payload[:mappings][name][:properties][field] = mappings[name][field]
           end
         end
-
       end
 
       payload
