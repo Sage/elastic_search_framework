@@ -102,11 +102,9 @@ module ElasticSearchFramework
 
     def settings(name:, type: nil, value:)
       self.index_settings = {} if index_settings.nil?
-      index_settings[name] = if type
-                               { type => value }
-                             else
-                               value
-                             end
+      index_settings[name] = {} if index_settings[name].nil?
+      return index_settings[name][type] = value if type
+      index_settings[name] = value
     end
 
     def create_payload
