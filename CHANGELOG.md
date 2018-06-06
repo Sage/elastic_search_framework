@@ -1,3 +1,6 @@
+## v2.0.1
+The settings method when passed multiple times it was replacing the key value instead of building a hash of data within the name / type keys.
+
 ## v2.0.0
 ### Breaking change
 

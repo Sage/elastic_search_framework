@@ -82,7 +82,14 @@ RSpec.describe ElasticSearchFramework::Index do
               'filter' => ['lowercase'],
               'type' => 'custom'
             }
-          }
+          },
+          'analyzer'=>{
+              'custom_analyzer'=>{
+                'filter'=>['lowercase'],
+                'type'=>'custom',
+                'tokenizer'=>'standard'
+              }
+            }
         }
       end
 
