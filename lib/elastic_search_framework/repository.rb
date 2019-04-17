@@ -114,15 +114,15 @@ module ElasticSearchFramework
     end
 
     def idle_timeout
-      @idle_timeout ||= Integer(ENV['CONNECTION_IDLE_TIMEOUT'] ||  5)
+      @idle_timeout ||= Integer(ENV['CONNECTION_IDLE_TIMEOUT'] || 5)
     end
 
     def read_timeout
-      @read_timeout ||= Integer(ENV['CONNECTION_READ_TIMEOUT'] ||  5)
+      @read_timeout ||= Integer(ENV['CONNECTION_READ_TIMEOUT'] || 5)
     end
 
     def open_timeout
-      @read_timeout ||= Integer(ENV['CONNECTION_OPEN_TIMEOUT'] ||  1)
+      @open_timeout ||= Integer(ENV['CONNECTION_OPEN_TIMEOUT'] || 1)
     end
 
     def valid_response?(status)
