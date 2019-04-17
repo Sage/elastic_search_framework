@@ -1,3 +1,7 @@
+## v2.1.0
+Ensures that the read timeout is set to either the value of `ENV['CONNECTION_READ_TIMEOUT']` or `5` as a default.
+Previously this was being set to the value of `ENV['CONNECTION_OPEN_TIMEOUT']` or `1` as a default.
+
 ## v2.0.1
 The settings method when passed multiple times it was replacing the key value instead of building a hash of data within the name / type keys.
 
