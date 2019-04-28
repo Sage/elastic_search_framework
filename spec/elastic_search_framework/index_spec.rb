@@ -276,8 +276,8 @@ RSpec.describe ElasticSearchFramework::Index do
     it 'should return a ElasticSearchFramework::Repository instance' do
       expect(ExampleIndex.repository).to be_a(ElasticSearchFramework::Repository)
     end
-    it 'should return a unique ElasticSearchFramework::Repository instance' do
-      expect(ExampleIndex.repository).not_to eq ExampleIndex.repository
+    it 'should return the same ElasticSearchFramework::Repository instance for multiple calls' do
+      expect(ExampleIndex.repository).to eq ExampleIndex.repository
     end
   end
 

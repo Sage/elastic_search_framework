@@ -11,6 +11,7 @@ require_relative '../spec/test_item.rb'
 require_relative '../spec/example_index'
 require_relative '../spec/example_index_2'
 require_relative '../spec/example_index_alias'
+require_relative '../spec/example_index_alias_2'
 require 'pry'
 
 RSpec.configure do |config|

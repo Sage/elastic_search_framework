@@ -165,7 +165,7 @@ module ElasticSearchFramework
     end
 
     def repository
-      ElasticSearchFramework::Repository.new
+      @repository ||= ElasticSearchFramework::Repository.new
     end
 
     def get_item(id:, type: 'default')
