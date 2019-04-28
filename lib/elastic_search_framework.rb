@@ -8,6 +8,7 @@ require_relative 'elastic_search_framework/logger'
 require_relative 'elastic_search_framework/exceptions'
 require_relative 'elastic_search_framework/repository'
 require_relative 'elastic_search_framework/index'
+require_relative 'elastic_search_framework/index_alias'
 require_relative 'elastic_search_framework/query'
 
 module ElasticSearchFramework

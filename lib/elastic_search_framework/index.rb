@@ -2,12 +2,17 @@ module ElasticSearchFramework
   module Index
     attr_accessor :index_settings
 
-    def index(name:)
+    def index(name:, version: nil)
       unless instance_variable_defined?(:@elastic_search_index_def)
-        instance_variable_set(:@elastic_search_index_def, name: "#{name}")
+        instance_variable_set(:@elastic_search_index_def, name: "#{name}#{version}")
+        instance_variable_set(:@elastic_search_index_version, version: version) unless version.nil?
       else
         raise ElasticSearchFramework::Exceptions::IndexError.new("[#{self.class}] - Duplicate index description. Name: #{name}.")
       end
+    end
+
+    def version
+      instance_variable_defined?(:@elastic_search_index_version) ? instance_variable_get(:@elastic_search_index_version) : 0
     end
 
     def id(field)
