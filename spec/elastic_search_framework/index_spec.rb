@@ -80,16 +80,17 @@ RSpec.describe ElasticSearchFramework::Index do
           'normalizer' => {
             'custom_normalizer' => {
               'filter' => ['lowercase'],
-              'type' => 'custom'
+              'type' => 'custom',
+              'char_filter' => []
             }
           },
-          'analyzer'=>{
-              'custom_analyzer'=>{
-                'filter'=>['lowercase'],
-                'type'=>'custom',
-                'tokenizer'=>'standard'
-              }
+          'analyzer' => {
+            'custom_analyzer' => {
+              'filter' => ['lowercase'],
+              'type' => 'custom',
+              'tokenizer' => 'standard'
             }
+          }
         }
       end
 
