@@ -51,6 +51,60 @@ This is used to set the port that should be used for all connection actions.
 
 > DEFAULT = 9200
 
+# IndexAlias
+To define an index alias within elasticsearch, create an index alias class that extends from the `ElasticSearchFramework::IndexAlias` module.
+
+Example:
+
+
+```ruby
+class ExampleIndexAlias
+  extend ElasticSearchFramework::IndexAlias
+
+  index ExampleIndex, active: true
+  index ExampleIndex2, active: false
+
+  name :example
+end
+```
+
+**attributes**
+
+ - **index** [Hash] [Required] [Multi] This is used to specify the indexes associated with this alias and which index is the current active index for the alias to point to.
+ - **name** [Hash] [Required] [Single] This is used to specify the unique name of the index alias.
+
+---
+
+Index Aliases are required to decouple your application from a specific index and allow you to handle index updates without downtime.
+
+To change the mapping of an existing index Create a new version of the index, then associate the new index with the index alias as an inactive index `active: false`. This will allow index writes and deletes to be performed on both indexes so no new data is lost while you perform a `_reindex` operation to move existing data from the old index into the new index.
+
+Once you have `_reindexed` into your new index you can then de-activate the old index `active: false` and activate the new index `active: true` in your index alias. This will swap all requests to the new index.
+
+Doing the above steps should enable you to seamlessly transition between 1 index and another when mapping/analyzer changes are required.
+
+## #create
+This method is called to create the index alias within an elastic search instance.
+> This method is idempotent and will modify the index alias if it already exists.
+
+> All associated indexes must exist before this method is called.
+
+    ExampleIndexAlias.create
+
+## Index operation methods
+The following index operation methods are available for an index alias:
+
+- `#get_item`
+- `#put_item`
+- `#delete_item`
+- `#query`
+
+> `#put_item` calls will be performed against all indexes associated with the alias.
+
+> `#delete_item` calls will be performed against all indexes associated with the alias.
+
+> Details for how to use the above index operation methods can be found below.
+
 # Index
 To define an index within elasticsearch, create an index definition class that extends from the `ElasticSearchFramework::Index` module.
 
