@@ -2,7 +2,7 @@ version: '2.1'
 
 services:
   elasticsearch:
-    image: elasticsearch:6.4.3
+    image: elasticsearch:5.6-alpine
     container_name: elasticsearch
     environment:
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
