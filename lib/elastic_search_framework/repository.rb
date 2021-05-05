@@ -1,8 +1,8 @@
 module ElasticSearchFramework
   class Repository
 
-    def set(index:, entity:, type: 'default')
-      uri = URI("#{host}/#{index.full_name}/#{type.downcase}/#{get_id_value(index: index, entity: entity)}")
+    def set(index:, entity:, type: 'default', op_type: 'index')
+      uri = URI("#{host}/#{index.full_name}/#{type.downcase}/#{get_id_value(index: index, entity: entity)}?op_type=#{op_type}")
       hash = hash_helper.to_hash(entity)
 
       request = Net::HTTP::Put.new(uri.request_uri)
@@ -13,12 +13,15 @@ module ElasticSearchFramework
         client.request(request)
       end
 
-      unless valid_response?(response.code)
+      if valid_response?(response.code)
+        return true
+      elsif op_type == 'create' && Integer(response.code) == 409
+        return true
+      else
         raise ElasticSearchFramework::Exceptions::IndexError.new(
             "An error occurred setting an index document. Response: #{response.body} | Code: #{response.code}"
         )
       end
-      return true
     end
 
     def get(index:, id:, type: 'default')

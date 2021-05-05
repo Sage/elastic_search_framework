@@ -3,6 +3,9 @@ rvm:
 - 2.3.0
 services:
 - elasticsearch
+before_install:
+- find /home/travis/.rvm/rubies -wholename '*default/bundler-*.gemspec' -delete
+- gem install bundler -v '< 2'
 before_script:
 - sleep 10
 - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64

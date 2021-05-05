@@ -63,22 +63,40 @@ RSpec.describe ElasticSearchFramework::Repository do
       ExampleIndexWithId.create
     end
 
-    it 'should create, read and delete an index document' do
-      subject.set(index: ExampleIndex, entity: item1)
-      subject.set(index: ExampleIndex, entity: item2)
-      subject.set(index: ExampleIndex, entity: item5)
-      index_item1 = subject.get(index: ExampleIndex, id: item1.id)
-      expect(index_item1[:id]).to eq item1.id
-      expect(index_item1[:name]).to eq item1.name
-      expect(index_item1[:timestamp]).to eq item1.timestamp
-      expect(index_item1[:number]).to eq item1.number
-      index_item2 = subject.get(index: ExampleIndex, id: item2.id)
-      expect(index_item2[:id]).to eq item2.id
-      expect(index_item2[:name]).to eq item2.name
-      expect(index_item2[:timestamp]).to eq item2.timestamp
-      expect(index_item2[:number]).to eq item2.number
-      subject.drop(index: ExampleIndex, id: item1.id)
-      expect(subject.get(index: ExampleIndex, id: item1.id)).to be_nil
+    context 'PUT with op_type: index' do
+      it 'should create, read and delete an index document' do
+        subject.set(index: ExampleIndex, entity: item1)
+        subject.set(index: ExampleIndex, entity: item1.tap { |i| i.timestamp += 100 })
+        subject.set(index: ExampleIndex, entity: item1.tap { |i| i.timestamp += 100 }, op_type: 'index')
+        subject.set(index: ExampleIndex, entity: item2)
+        subject.set(index: ExampleIndex, entity: item5)
+        index_item1 = subject.get(index: ExampleIndex, id: item1.id)
+        expect(index_item1[:id]).to eq item1.id
+        expect(index_item1[:name]).to eq item1.name
+        expect(index_item1[:timestamp]).to eq item1.timestamp
+        expect(index_item1[:number]).to eq item1.number
+        index_item2 = subject.get(index: ExampleIndex, id: item2.id)
+        expect(index_item2[:id]).to eq item2.id
+        expect(index_item2[:name]).to eq item2.name
+        expect(index_item2[:timestamp]).to eq item2.timestamp
+        expect(index_item2[:number]).to eq item2.number
+        subject.drop(index: ExampleIndex, id: item1.id)
+        expect(subject.get(index: ExampleIndex, id: item1.id)).to be_nil
+      end
+    end
+
+    context 'PUT with op_type: create' do
+      let!(:original_timestamp) { item1.timestamp }
+
+      it 'should not update item' do
+        subject.set(index: ExampleIndex, entity: item1)
+        subject.set(index: ExampleIndex, entity: item1.tap { |i| i.timestamp += 100 }, op_type: 'create')
+        index_item1 = subject.get(index: ExampleIndex, id: item1.id)
+        expect(index_item1[:id]).to eq item1.id
+        expect(index_item1[:name]).to eq item1.name
+        expect(index_item1[:timestamp]).to eq original_timestamp
+        expect(index_item1[:number]).to eq item1.number
+      end
     end
 
     after do
