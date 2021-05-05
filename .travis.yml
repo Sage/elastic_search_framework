@@ -4,6 +4,7 @@ rvm:
 services:
 - elasticsearch
 before_script:
+- gem install -v 1.17.3 bundler --no-rdoc --no-ri
 - sleep 10
 - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64
   > ./cc-test-reporter
