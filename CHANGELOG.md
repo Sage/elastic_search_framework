@@ -1,3 +1,10 @@
+## v2.3.0
+Adds support for `op_type` to be supplied for `ElasticSearchFramework::Repository#set` to allow control of PUT behaviour in create scenarios.
+See [documentation](https://www.elastic.co/guide/en/elasticsearch/reference/5.6/docs-index_.html#operation-type) for more information and accepted values.
+
+## v2.2.0
+Adds index alias support.
+
 ## v2.1.0
 Ensures that the read timeout is set to either the value of `ENV['CONNECTION_READ_TIMEOUT']` or `5` as a default.
 Previously this was being set to the value of `ENV['CONNECTION_OPEN_TIMEOUT']` or `1` as a default.
