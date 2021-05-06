@@ -127,9 +127,9 @@ module ElasticSearchFramework
       repository.get(index: self, id: id, type: type)
     end
 
-    def put_item(type: "default", item:)
+    def put_item(type: "default", item:, op_type: 'index')
       indexes.each do |index|
-        repository.set(entity: item, index: index[:klass], type: type)
+        repository.set(entity: item, index: index[:klass], type: type, op_type: op_type)
       end
     end
 

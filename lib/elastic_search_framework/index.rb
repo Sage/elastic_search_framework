@@ -172,8 +172,8 @@ module ElasticSearchFramework
       repository.get(index: self, id: id, type: type)
     end
 
-    def put_item(type: 'default', item:)
-      repository.set(entity: item, index: self, type: type)
+    def put_item(type: 'default', item:, op_type: 'index')
+      repository.set(entity: item, index: self, type: type, op_type: op_type)
     end
 
     def delete_item(id:, type: 'default')

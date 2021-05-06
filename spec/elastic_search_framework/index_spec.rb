@@ -301,9 +301,24 @@ RSpec.describe ElasticSearchFramework::Index do
         i.number = 5
       end
     end
-    it 'should call set on the repository' do
-      expect_any_instance_of(ElasticSearchFramework::Repository).to receive(:set).with(entity: item, index: ExampleIndex, type: type)
-      ExampleIndex.put_item(type: type, item: item)
+
+    context 'without specifying op_type' do
+      it 'should call set on the repository with default op_type (index)' do
+        expect_any_instance_of(ElasticSearchFramework::Repository).to receive(:set).with(entity: item, index: ExampleIndex, op_type: 'index', type: type)
+        ExampleIndex.put_item(type: type, item: item)
+      end
+    end
+
+    context 'with specified op_type' do
+      it 'should call set on the repository with supplied op_type (index)' do
+        expect_any_instance_of(ElasticSearchFramework::Repository).to receive(:set).with(entity: item, index: ExampleIndex, op_type: 'index', type: type)
+        ExampleIndex.put_item(type: type, item: item, op_type: 'index')
+      end
+
+      it 'should call set on the repository with supplied op_type (create)' do
+        expect_any_instance_of(ElasticSearchFramework::Repository).to receive(:set).with(entity: item, index: ExampleIndex, op_type: 'create', type: type)
+        ExampleIndex.put_item(type: type, item: item, op_type: 'create')
+      end
     end
   end
 

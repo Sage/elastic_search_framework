@@ -1,3 +1,8 @@
+## v2.3.1
+Adds support for `op_type` to be supplied for `ElasticSearchFramework::Index#put_item` to allow control of PUT behaviour in create scenarios.
+Adds support for `op_type` to be supplied for `ElasticSearchFramework::IndexAlias#put_item` to allow control of PUT behaviour in create scenarios.
+See [documentation](https://www.elastic.co/guide/en/elasticsearch/reference/5.6/docs-index_.html#operation-type) for more information and accepted values.
+
 ## v2.3.0
 Adds support for `op_type` to be supplied for `ElasticSearchFramework::Repository#set` to allow control of PUT behaviour in create scenarios.
 See [documentation](https://www.elastic.co/guide/en/elasticsearch/reference/5.6/docs-index_.html#operation-type) for more information and accepted values.
