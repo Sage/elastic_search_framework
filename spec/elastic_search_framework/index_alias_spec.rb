@@ -125,10 +125,26 @@ RSpec.describe ElasticSearchFramework::Index do
         i.number = 5
       end
     end
-    it 'should call set on the repository for each index of the alias' do
-      expect(ExampleIndexAlias.repository).to receive(:set).with(entity: item, index: ExampleIndex, type: type).once
-      expect(ExampleIndexAlias.repository).to receive(:set).with(entity: item, index: ExampleIndex2, type: type).once
-      ExampleIndexAlias.put_item(type: type, item: item)
+    context 'without specifying op_type' do
+      it 'should call set on the repository for each index of the alias with default op_type (index)' do
+        expect(ExampleIndexAlias.repository).to receive(:set).with(entity: item, index: ExampleIndex, type: type, op_type: 'index').once
+        expect(ExampleIndexAlias.repository).to receive(:set).with(entity: item, index: ExampleIndex2, type: type, op_type: 'index').once
+        ExampleIndexAlias.put_item(type: type, item: item)
+      end
+    end
+
+    context 'with specified op_type' do
+      it 'should call set on the repository for each index of the alias with supplied op_type (index)' do
+        expect(ExampleIndexAlias.repository).to receive(:set).with(entity: item, index: ExampleIndex, type: type, op_type: 'index').once
+        expect(ExampleIndexAlias.repository).to receive(:set).with(entity: item, index: ExampleIndex2, type: type, op_type: 'index').once
+        ExampleIndexAlias.put_item(type: type, item: item, op_type: 'index')
+      end
+
+      it 'should call set on the repository for each index of the alias with supplied op_type (create)' do
+        expect(ExampleIndexAlias.repository).to receive(:set).with(entity: item, index: ExampleIndex, type: type, op_type: 'create').once
+        expect(ExampleIndexAlias.repository).to receive(:set).with(entity: item, index: ExampleIndex2, type: type, op_type: 'create').once
+        ExampleIndexAlias.put_item(type: type, item: item, op_type: 'create')
+      end
     end
   end
 
