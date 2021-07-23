@@ -1,3 +1,12 @@
+## v2.4.0
+Adds support for `routing_key` to be supplied for `ElasticSearchFramework::IndexAlias#<get|put|delete>_item` to define a custom routing key when reading or writing index documents.
+
+Adds support for `routing_key` to be supplied for `ElasticSearchFramework::ShardedIndex#<get|put|delete>_item` to define a custom routing key when reading or writing index documents.
+
+**IMPORTANT** Default routing behaviour remains unless both a `routing_key` is supplied in the request, and the index class inherits from `ElasticSearchFramework::ShardedIndex`. `ElasticSearchFramework::Index` subclasses will not receive this update.
+
+See [documentation](https://www.elastic.co/blog/customizing-your-document-routing) for more information.
+
 ## v2.3.1
 Adds support for `op_type` to be supplied for `ElasticSearchFramework::Index#put_item` to allow control of PUT behaviour in create scenarios.
 Adds support for `op_type` to be supplied for `ElasticSearchFramework::IndexAlias#put_item` to allow control of PUT behaviour in create scenarios.

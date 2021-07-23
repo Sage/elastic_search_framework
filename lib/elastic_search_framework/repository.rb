@@ -1,8 +1,11 @@
 module ElasticSearchFramework
   class Repository
 
-    def set(index:, entity:, type: 'default', op_type: 'index')
-      uri = URI("#{host}/#{index.full_name}/#{type.downcase}/#{get_id_value(index: index, entity: entity)}?op_type=#{op_type}")
+    def set(index:, entity:, type: 'default', op_type: 'index', routing_key: nil)
+      uri_string = "#{host}/#{index.full_name}/#{type.downcase}/#{get_id_value(index: index, entity: entity)}?op_type=#{op_type}"
+      uri_string += "&routing=#{routing_key}" if routing_key
+
+      uri = URI(uri_string)
       hash = hash_helper.to_hash(entity)
 
       request = Net::HTTP::Put.new(uri.request_uri)
@@ -24,8 +27,11 @@ module ElasticSearchFramework
       end
     end
 
-    def get(index:, id:, type: 'default')
-      uri = URI("#{host}/#{index.full_name}/#{type.downcase}/#{id}/_source")
+    def get(index:, id:, type: 'default', routing_key: nil)
+      uri_string = "#{host}/#{index.full_name}/#{type.downcase}/#{id}/_source"
+      uri_string += "?routing=#{routing_key}" if routing_key
+
+      uri = URI(uri_string)
 
       request = Net::HTTP::Get.new(uri.request_uri)
 
@@ -46,8 +52,11 @@ module ElasticSearchFramework
       end
     end
 
-    def drop(index:, id:, type: 'default')
-      uri = URI("#{host}/#{index.full_name}/#{type.downcase}/#{id}")
+    def drop(index:, id:, type: 'default', routing_key: nil)
+      uri_string = "#{host}/#{index.full_name}/#{type.downcase}/#{id}"
+      uri_string += "?routing=#{routing_key}" if routing_key
+
+      uri = URI(uri_string)
 
       request = Net::HTTP::Delete.new(uri.request_uri)
 
@@ -64,8 +73,11 @@ module ElasticSearchFramework
       end
     end
 
-    def query(index:, expression:, type: 'default', limit: 10, count: false)
-      uri = URI("#{host}/#{index.full_name}/#{type}/_search?q=#{URI.encode(expression)}&size=#{limit}")
+    def query(index:, expression:, type: 'default', limit: 10, count: false, routing_key: nil)
+      uri_string = "#{host}/#{index.full_name}/#{type}/_search?q=#{URI.encode(expression)}&size=#{limit}"
+      uri_string += "&routing=#{routing_key}" if routing_key
+
+      uri = URI(uri_string)
 
       request = Net::HTTP::Get.new(uri.request_uri)
 
@@ -86,8 +98,11 @@ module ElasticSearchFramework
       end
     end
 
-    def json_query(index_name:, json_query:, type: 'default')
-      uri = URI("#{host}/#{index_name}/#{type}/_search")
+    def json_query(index_name:, json_query:, type: 'default', routing_key: nil)
+      uri_string = "#{host}/#{index_name}/#{type}/_search"
+      uri_string += "?routing=#{routing_key}" if routing_key
+
+      uri = URI(uri_string)
 
       request = Net::HTTP::Get.new(uri.request_uri)
       request.content_type = 'application/json'

@@ -1,5 +1,5 @@
 module ElasticSearchFramework
-  module Index
+  module ShardedIndex
     attr_accessor :index_settings
 
     def index(name:, version: nil, routing: false)
@@ -21,7 +21,7 @@ module ElasticSearchFramework
     # end
 
     def routing_enabled?
-      false
+      true
     end
 
     def id(field)

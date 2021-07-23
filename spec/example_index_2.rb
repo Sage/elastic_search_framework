@@ -1,5 +1,5 @@
 class ExampleIndex2
-  extend ElasticSearchFramework::Index
+  extend ElasticSearchFramework::ShardedIndex
 
   index name: 'example_index', version: 2
 
@@ -7,7 +7,7 @@ class ExampleIndex2
 end
 
 class ExampleIndexWithId2
-  extend ElasticSearchFramework::Index
+  extend ElasticSearchFramework::ShardedIndex
 
   index name: 'example_index', version: 2
 
@@ -17,7 +17,7 @@ class ExampleIndexWithId2
 end
 
 class ExampleIndexWithSettings2
-  extend ElasticSearchFramework::Index
+  extend ElasticSearchFramework::ShardedIndex
 
   index name: 'example_index', version: 2
 
@@ -28,4 +28,8 @@ class ExampleIndexWithSettings2
   settings name: :analysis, type: :normalizer, value: normalizer_value
   settings name: :analysis, type: :analyzer, value: analyzer_value
   mapping name: 'default', field: :name, type: :keyword, index: true
+end
+
+class InvalidExampleIndex2
+  extend ElasticSearchFramework::ShardedIndex
 end

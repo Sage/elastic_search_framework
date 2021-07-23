@@ -123,24 +123,39 @@ module ElasticSearchFramework
       @repository ||= ElasticSearchFramework::Repository.new
     end
 
-    def get_item(id:, type: "default")
-      repository.get(index: self, id: id, type: type)
+    def get_item(id:, type: "default", routing_key: nil)
+      active_index = indexes.detect { |i| i[:active] == true }[:klass]
+
+      options = { index: self, id: id, type: type }
+      options[:routing_key] = routing_key if active_index.routing_enabled? && routing_key
+
+      repository.get(options)
     end
 
-    def put_item(type: "default", item:, op_type: 'index')
+    def put_item(type: "default", item:, op_type: 'index', routing_key: nil)
       indexes.each do |index|
-        repository.set(entity: item, index: index[:klass], type: type, op_type: op_type)
+        options = { entity: item, index: index[:klass], type: type, op_type: op_type }
+        options[:routing_key] = routing_key if index[:klass].routing_enabled? && routing_key
+
+        repository.set(options)
       end
     end
 
-    def delete_item(id:, type: "default")
+    def delete_item(id:, type: "default", routing_key: nil)
       indexes.each do |index|
-        repository.drop(index: index[:klass], id: id, type: type)
+        options = { index: index[:klass], id: id, type: type }
+        options[:routing_key] = routing_key if index[:klass].routing_enabled? && routing_key
+
+        repository.drop(options)
       end
     end
 
     def query
       ElasticSearchFramework::Query.new(index: self)
+    end
+
+    def routing_enabled?
+      indexes.find(active: true).first[:klass].routing_enabled?
     end
   end
 end
