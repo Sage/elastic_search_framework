@@ -2,11 +2,10 @@ module ElasticSearchFramework
   module ShardedIndex
     attr_accessor :index_settings
 
-    def index(name:, version: nil, routing: false)
+    def index(name:, version: nil)
       unless instance_variable_defined?(:@elastic_search_index_def)
         instance_variable_set(:@elastic_search_index_def, name: "#{name}#{version}")
         instance_variable_set(:@elastic_search_index_version, version: version) unless version.nil?
-        # instance_variable_set(:@elastic_search_index_routing, routing)
       else
         raise ElasticSearchFramework::Exceptions::IndexError.new("[#{self.class}] - Duplicate index description. Name: #{name}.")
       end
@@ -15,10 +14,6 @@ module ElasticSearchFramework
     def version
       instance_variable_defined?(:@elastic_search_index_version) ? instance_variable_get(:@elastic_search_index_version) : 0
     end
-
-    # def enable_routing
-    #   @@routing = true
-    # end
 
     def routing_enabled?
       true
