@@ -79,6 +79,7 @@ RSpec.describe ElasticSearchFramework::Index do
         {
           'normalizer' => {
             'custom_normalizer' => {
+              'char_filter' => [],
               'filter' => ['lowercase'],
               'type' => 'custom'
             }
