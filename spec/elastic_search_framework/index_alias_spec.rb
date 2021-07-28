@@ -108,9 +108,23 @@ RSpec.describe ElasticSearchFramework::Index do
   describe '#get_item' do
     let(:id) { 10 }
     let(:type) { 'default' }
-    it 'should call get on the repository' do
-      expect(ExampleIndexAlias.repository).to receive(:get).with(index: ExampleIndexAlias, id: id, type: type).once
-      ExampleIndexAlias.get_item(id: id, type: type)
+    context 'when active index routing_enabled false' do
+      it 'should call get on the repository' do
+        expect(ExampleIndexAlias.repository).to receive(:get).with(index: ExampleIndexAlias, id: id, type: type).once
+        ExampleIndexAlias.get_item(id: id, type: type)
+      end
+
+      it 'should call get on the repository and not pass through routing_key when supplied' do
+        expect(ExampleIndexAlias.repository).to receive(:get).with(index: ExampleIndexAlias, id: id, type: type).once
+        ExampleIndexAlias.get_item(id: id, type: type, routing_key: 5)
+      end
+    end
+
+    context 'when active index routing_enabled true' do
+      it 'should call get on the repository' do
+        expect(ExampleIndexAlias2.repository).to receive(:get).with(index: ExampleIndexAlias2, id: id, type: type, routing_key: 5).once
+        ExampleIndexAlias2.get_item(id: id, type: type, routing_key: 5)
+      end
     end
   end
 
@@ -128,22 +142,22 @@ RSpec.describe ElasticSearchFramework::Index do
     context 'without specifying op_type' do
       it 'should call set on the repository for each index of the alias with default op_type (index)' do
         expect(ExampleIndexAlias.repository).to receive(:set).with(entity: item, index: ExampleIndex, type: type, op_type: 'index').once
-        expect(ExampleIndexAlias.repository).to receive(:set).with(entity: item, index: ExampleIndex2, type: type, op_type: 'index').once
-        ExampleIndexAlias.put_item(type: type, item: item)
+        expect(ExampleIndexAlias.repository).to receive(:set).with(entity: item, index: ExampleIndex2, type: type, op_type: 'index', routing_key: 5).once
+        ExampleIndexAlias.put_item(type: type, item: item, routing_key: 5)
       end
     end
 
     context 'with specified op_type' do
       it 'should call set on the repository for each index of the alias with supplied op_type (index)' do
         expect(ExampleIndexAlias.repository).to receive(:set).with(entity: item, index: ExampleIndex, type: type, op_type: 'index').once
-        expect(ExampleIndexAlias.repository).to receive(:set).with(entity: item, index: ExampleIndex2, type: type, op_type: 'index').once
-        ExampleIndexAlias.put_item(type: type, item: item, op_type: 'index')
+        expect(ExampleIndexAlias.repository).to receive(:set).with(entity: item, index: ExampleIndex2, type: type, op_type: 'index', routing_key: 5).once
+        ExampleIndexAlias.put_item(type: type, item: item, op_type: 'index', routing_key: 5)
       end
 
       it 'should call set on the repository for each index of the alias with supplied op_type (create)' do
         expect(ExampleIndexAlias.repository).to receive(:set).with(entity: item, index: ExampleIndex, type: type, op_type: 'create').once
-        expect(ExampleIndexAlias.repository).to receive(:set).with(entity: item, index: ExampleIndex2, type: type, op_type: 'create').once
-        ExampleIndexAlias.put_item(type: type, item: item, op_type: 'create')
+        expect(ExampleIndexAlias.repository).to receive(:set).with(entity: item, index: ExampleIndex2, type: type, op_type: 'create', routing_key: 5).once
+        ExampleIndexAlias.put_item(type: type, item: item, op_type: 'create', routing_key: 5)
       end
     end
   end
@@ -153,8 +167,8 @@ RSpec.describe ElasticSearchFramework::Index do
     let(:type) { 'default' }
     it 'should call drop on the repository for each index of the alias' do
       expect(ExampleIndexAlias.repository).to receive(:drop).with(index: ExampleIndex, id: id, type: type).once
-      expect(ExampleIndexAlias.repository).to receive(:drop).with(index: ExampleIndex2, id: id, type: type).once
-      ExampleIndexAlias.delete_item(id: id, type: type)
+      expect(ExampleIndexAlias.repository).to receive(:drop).with(index: ExampleIndex2, id: id, type: type, routing_key: 5).once
+      ExampleIndexAlias.delete_item(id: id, type: type, routing_key: 5)
     end
   end
 end
