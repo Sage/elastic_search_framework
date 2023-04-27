@@ -176,21 +176,21 @@ module ElasticSearchFramework
       options = { index: self, id: id, type: type }
       options[:routing_key] = routing_key if routing_enabled? && routing_key
 
-      repository.get(options)
+      repository.get(**options)
     end
 
     def put_item(type: 'default', item:, op_type: 'index', routing_key: nil)
       options = { entity: item, index: self, type: type, op_type: op_type }
       options[:routing_key] = routing_key if routing_enabled? && routing_key
 
-      repository.set(options)
+      repository.set(**options)
     end
 
     def delete_item(id:, type: 'default', routing_key: nil)
       options = { index: self, id: id, type: type }
       options[:routing_key] = routing_key if routing_enabled? && routing_key
 
-      repository.drop(options)
+      repository.drop(**options)
     end
 
     def query
