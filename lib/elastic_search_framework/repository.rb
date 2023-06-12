@@ -89,9 +89,9 @@ module ElasticSearchFramework
         result = JSON.parse(response.body)
         hash_helper.indifferent!(result)
         if count
-          return result[:hits][:total]
+          return result[:hits][:total][:value]
         else
-          return result[:hits][:total] > 0 ? result[:hits][:hits] : []
+          return result[:hits][:total][:value] > 0 ? result[:hits][:hits] : []
         end
       else
         raise ElasticSearchFramework::Exceptions::IndexError.new("An error occurred executing an index query. Response: #{response.body}")

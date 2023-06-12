@@ -56,9 +56,9 @@ module ElasticSearchFramework
     end
 
     def put(payload:)
-      uri = URI("#{host}/#{full_name}")
+      uri = URI("#{host}/#{full_name}/default")
 
-      request = Net::HTTP::Put.new(uri.request_uri)
+      request = Net::HTTP::Post.new(uri.request_uri)
       request.body = JSON.dump(payload)
       request.content_type = 'application/json'
 

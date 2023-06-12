@@ -96,6 +96,7 @@ RSpec.describe ElasticSearchFramework::Index do
 
       it 'adds analysis to the index' do
         ExampleIndexWithSettings.create
+        binding.pry
         expect(ExampleIndexWithSettings.get.dig('example_index', 'settings', 'index', 'number_of_shards')).to eq('1')
         expect(ExampleIndexWithSettings.get.dig('example_index', 'settings', 'index', 'analysis')).to eq(expected)
       end
