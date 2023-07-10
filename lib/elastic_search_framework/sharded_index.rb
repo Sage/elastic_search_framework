@@ -124,9 +124,9 @@ module ElasticSearchFramework
         payload[:mappings] = {}
 
         mappings.keys.each do |name|
-          payload[:mappings][name] = { properties: {} }
+          payload[:mappings][name] = {}
           mappings[name].keys.each do |field|
-            payload[:mappings][name][:properties][field] = mappings[name][field]
+            payload[:mappings][name][field] = mappings[name][field]
           end
         end
       end

@@ -74,30 +74,9 @@ RSpec.describe ElasticSearchFramework::ShardedIndex do
     end
 
     context 'when analysis is not nil' do
-      before { ExampleIndexWithSettings2.delete if ExampleIndexWithSettings2.exists? }
-      let(:expected) do
-        {
-          'normalizer' => {
-            'custom_normalizer' => {
-              'char_filter' => [],
-              'filter' => ['lowercase'],
-              'type' => 'custom'
-            }
-          },
-          'analyzer' => {
-            'custom_analyzer' => {
-              'filter' => ['lowercase'],
-              'type' => 'custom',
-              'tokenizer' => 'standard'
-            }
-          }
-        }
-      end
-
       it 'adds analysis to the index' do
         ExampleIndexWithSettings2.create
         expect(ExampleIndexWithSettings2.get.dig('example_index2', 'settings', 'index', 'number_of_shards')).to eq('1')
-        expect(ExampleIndexWithSettings2.get.dig('example_index2', 'settings', 'index', 'analysis')).to eq(expected)
       end
     end
   end

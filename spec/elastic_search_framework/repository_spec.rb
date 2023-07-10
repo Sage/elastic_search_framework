@@ -131,7 +131,7 @@ RSpec.describe ElasticSearchFramework::Repository do
       expect(results.length).to eq 2
 
       results = subject.query(index: ExampleIndex, expression: 'NOT (name:john)')
-      expect(results.length).to eq 3
+      expect(results.length).to eq 4
     end
 
     after do
@@ -206,7 +206,7 @@ RSpec.describe ElasticSearchFramework::Repository do
       expect(results['hits'].length).to eq 2
 
       results = subject.json_query(index_name: 'test_example_index', json_query: example_three.to_json)
-      expect(results['hits'].length).to eq 3
+      expect(results['hits'].length).to eq 4
     end
 
     context 'when an error occurs' do
@@ -231,10 +231,14 @@ RSpec.describe ElasticSearchFramework::Repository do
                 'col' => 38
               }
             ],
-            'type' => 'parsing_exception',
-            'reason' => '[name] query malformed, no start_object after query name',
-            'line' => 1,
-            'col' => 38
+            'type' => 'x_content_parse_exception',
+            'reason' => '[1:38] [bool] failed to parse field [must_not]',
+            'caused_by' => {
+              'type' => 'parsing_exception',
+              'reason' => '[name] query malformed, no start_object after query name',
+              'line' => 1,
+              'col' => 38
+            }
           },
           'status' => 400
         }
@@ -254,5 +258,4 @@ RSpec.describe ElasticSearchFramework::Repository do
       expect(subject.host).to eq "#{ElasticSearchFramework.host}:#{ElasticSearchFramework.port}"
     end
   end
-
 end

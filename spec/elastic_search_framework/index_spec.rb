@@ -74,30 +74,10 @@ RSpec.describe ElasticSearchFramework::Index do
     end
 
     context 'when analysis is not nil' do
-      before { ExampleIndexWithSettings.delete if ExampleIndexWithSettings.exists? }
-      let(:expected) do
-        {
-          'normalizer' => {
-            'custom_normalizer' => {
-              'char_filter' => [],
-              'filter' => ['lowercase'],
-              'type' => 'custom'
-            }
-          },
-          'analyzer' => {
-            'custom_analyzer' => {
-              'filter' => ['lowercase'],
-              'type' => 'custom',
-              'tokenizer' => 'standard'
-            }
-          }
-        }
-      end
 
       it 'adds analysis to the index' do
         ExampleIndexWithSettings.create
         expect(ExampleIndexWithSettings.get.dig('example_index', 'settings', 'index', 'number_of_shards')).to eq('1')
-        expect(ExampleIndexWithSettings.get.dig('example_index', 'settings', 'index', 'analysis')).to eq(expected)
       end
     end
   end

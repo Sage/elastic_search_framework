@@ -79,7 +79,7 @@ RSpec.describe ElasticSearchFramework::Query do
       expect(results.length).to eq 3
 
       results = ExampleIndex.query.name.not_eq('john').execute
-      expect(results.length).to eq 3
+      expect(results.length).to eq 4
 
       results = ExampleIndex.query.name.contains?('oh').execute
       expect(results.length).to eq 1

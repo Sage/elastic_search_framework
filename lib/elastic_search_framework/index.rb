@@ -42,9 +42,7 @@ module ElasticSearchFramework
     end
 
     def create
-      if !valid?
-        raise ElasticSearchFramework::Exceptions::IndexError.new("[#{self.class}] - Invalid Index description specified.")
-      end
+      raise ElasticSearchFramework::Exceptions::IndexError.new("[#{self.class}] - Invalid Index description specified.") unless valid?
 
       if exists?
         ElasticSearchFramework.logger.debug { "[#{self.class}] - Index already exists."}
@@ -85,12 +83,7 @@ module ElasticSearchFramework
       response = repository.with_client do |client|
         client.request(request)
       end
-
-      result = nil
-      if is_valid_response?(response.code)
-        result = JSON.parse(response.body)
-      end
-      result
+      is_valid_response?(response.code) ? JSON.parse(response.body) : nil
     end
 
     def exists?
@@ -113,20 +106,20 @@ module ElasticSearchFramework
       self.index_settings = {} if index_settings.nil?
       index_settings[name] = {} if index_settings[name].nil?
       return index_settings[name][type] = value if type
+
       index_settings[name] = value
     end
 
     def create_payload
-      payload = { }
+      payload = {}
       payload[:settings] = index_settings unless index_settings.nil?
-
       unless mappings.keys.empty?
         payload[:mappings] = {}
 
-        mappings.keys.each do |name|
-          payload[:mappings][name] = { properties: {} }
-          mappings[name].keys.each do |field|
-            payload[:mappings][name][:properties][field] = mappings[name][field]
+        mappings.each_key do |name|
+          payload[:mappings][name] = {}
+          mappings[name].each_key do |field|
+            payload[:mappings][name][field] = mappings[name][field]
           end
         end
       end
@@ -135,21 +128,21 @@ module ElasticSearchFramework
     end
 
     def valid?
-      self.instance_variable_get(:@elastic_search_index_def) ? true : false
+      instance_variable_get(:@elastic_search_index_def) ? true : false
     end
 
     def description
-      hash = self.instance_variable_get(:@elastic_search_index_def)
-      if instance_variable_defined?(:@elastic_search_index_id)
-        hash[:id] = self.instance_variable_get(:@elastic_search_index_id)
-      else
-        hash[:id] = :id
-      end
+      hash = instance_variable_get(:@elastic_search_index_def)
+      hash[:id] = if instance_variable_defined?(:@elastic_search_index_id)
+                    instance_variable_get(:@elastic_search_index_id)
+                  else
+                    :id
+                  end
       hash
     end
 
     def mappings
-      self.instance_variable_defined?(:@elastic_search_index_mappings) ? self.instance_variable_get(:@elastic_search_index_mappings) : {}
+      instance_variable_defined?(:@elastic_search_index_mappings) ? instance_variable_get(:@elastic_search_index_mappings) : {}
     end
 
     def is_valid_response?(code)
@@ -174,7 +167,7 @@ module ElasticSearchFramework
 
     def get_item(id:, type: 'default', routing_key: nil)
       options = { index: self, id: id, type: type }
-      options[:routing_key] = routing_key if routing_enabled? && routing_key
+      options[:routing_key] = routpropertiesing_key if routing_enabled? && routing_key
 
       repository.get(options)
     end
