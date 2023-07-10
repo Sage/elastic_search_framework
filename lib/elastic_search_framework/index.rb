@@ -167,7 +167,7 @@ module ElasticSearchFramework
 
     def get_item(id:, type: 'default', routing_key: nil)
       options = { index: self, id: id, type: type }
-      options[:routing_key] = routpropertiesing_key if routing_enabled? && routing_key
+      options[:routing_key] = routing_key if routing_enabled? && routing_key
 
       repository.get(options)
     end
