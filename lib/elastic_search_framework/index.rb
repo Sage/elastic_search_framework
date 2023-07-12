@@ -42,7 +42,9 @@ module ElasticSearchFramework
     end
 
     def create
-      raise ElasticSearchFramework::Exceptions::IndexError.new("[#{self.class}] - Invalid Index description specified.") unless valid?
+      if !valid?
+        raise ElasticSearchFramework::Exceptions::IndexError.new("[#{self.class}] - Invalid Index description specified.")
+      end
 
       if exists?
         ElasticSearchFramework.logger.debug { "[#{self.class}] - Index already exists."}
@@ -83,7 +85,12 @@ module ElasticSearchFramework
       response = repository.with_client do |client|
         client.request(request)
       end
-      is_valid_response?(response.code) ? JSON.parse(response.body) : nil
+
+      result = nil
+      if is_valid_response?(response.code)
+        result = JSON.parse(response.body)
+      end
+      result
     end
 
     def exists?
@@ -113,12 +120,13 @@ module ElasticSearchFramework
     def create_payload
       payload = {}
       payload[:settings] = index_settings unless index_settings.nil?
+
       unless mappings.keys.empty?
         payload[:mappings] = {}
 
-        mappings.each_key do |name|
+        mappings.keys.each do |name|
           payload[:mappings][name] = { properties: {} }
-          mappings[name].each_key do |field|
+          mappings[name].keys.each do |field|
             payload[:mappings][name][:properties][field] = mappings[name][field]
           end
         end
@@ -128,21 +136,21 @@ module ElasticSearchFramework
     end
 
     def valid?
-      instance_variable_get(:@elastic_search_index_def) ? true : false
+      self.instance_variable_get(:@elastic_search_index_def) ? true : false
     end
 
     def description
-      hash = instance_variable_get(:@elastic_search_index_def)
-      hash[:id] = if instance_variable_defined?(:@elastic_search_index_id)
-                    instance_variable_get(:@elastic_search_index_id)
-                  else
-                    :id
-                  end
+      hash = self.instance_variable_get(:@elastic_search_index_def)
+      if instance_variable_defined?(:@elastic_search_index_id)
+        hash[:id] = self.instance_variable_get(:@elastic_search_index_id)
+      else
+        hash[:id] = :id
+      end
       hash
     end
 
     def mappings
-      instance_variable_defined?(:@elastic_search_index_mappings) ? instance_variable_get(:@elastic_search_index_mappings) : {}
+      self.instance_variable_defined?(:@elastic_search_index_mappings) ? instance_variable_get(:@elastic_search_index_mappings) : {}
     end
 
     def is_valid_response?(code)

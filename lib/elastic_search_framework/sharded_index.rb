@@ -123,9 +123,9 @@ module ElasticSearchFramework
       unless mappings.keys.empty?
         payload[:mappings] = {}
 
-        mappings.each_key do |name|
+        mappings.keys.each do |name|
           payload[:mappings][name] = { properties: {} }
-          mappings[name].each_key do |field|
+          mappings[name].keys.each do |field|
             payload[:mappings][name][:properties][field] = mappings[name][field]
           end
         end
