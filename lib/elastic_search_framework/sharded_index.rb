@@ -123,10 +123,10 @@ module ElasticSearchFramework
       unless mappings.keys.empty?
         payload[:mappings] = {}
 
-        mappings.keys.each do |name|
-          payload[:mappings][name] = {}
-          mappings[name].keys.each do |field|
-            payload[:mappings][name][field] = mappings[name][field]
+        mappings.each_key do |name|
+          payload[:mappings][name] = { properties: {} }
+          mappings[name].each_key do |field|
+            payload[:mappings][name][:properties][field] = mappings[name][field]
           end
         end
       end
