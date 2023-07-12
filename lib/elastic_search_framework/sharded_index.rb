@@ -56,7 +56,8 @@ module ElasticSearchFramework
     end
 
     def put(payload:)
-      uri = URI("#{host}/#{full_name}/default")
+      mapping_name = payload[:mappings] ? "/#{payload[:mappings].keys[0]}" : ''
+      uri = URI("#{host}/#{full_name}#{mapping_name}")
 
       request = Net::HTTP::Post.new(uri.request_uri)
       request.body = JSON.dump(payload)
@@ -117,7 +118,7 @@ module ElasticSearchFramework
     end
 
     def create_payload
-      payload = { }
+      payload = {}
       payload[:settings] = index_settings unless index_settings.nil?
 
       unless mappings.keys.empty?

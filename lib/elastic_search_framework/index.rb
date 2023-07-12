@@ -56,8 +56,8 @@ module ElasticSearchFramework
     end
 
     def put(payload:)
-      uri = URI("#{host}/#{full_name}/default")
-
+      mapping_name = payload[:mappings] ? "/#{payload[:mappings].keys[0]}" : ''
+      uri = URI("#{host}/#{full_name}#{mapping_name}")
       request = Net::HTTP::Post.new(uri.request_uri)
       request.body = JSON.dump(payload)
       request.content_type = 'application/json'
@@ -150,7 +150,7 @@ module ElasticSearchFramework
     end
 
     def mappings
-      self.instance_variable_defined?(:@elastic_search_index_mappings) ? instance_variable_get(:@elastic_search_index_mappings) : {}
+      self.instance_variable_defined?(:@elastic_search_index_mappings) ? self.instance_variable_get(:@elastic_search_index_mappings) : {}
     end
 
     def is_valid_response?(code)
