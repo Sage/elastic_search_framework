@@ -58,8 +58,8 @@ RSpec.describe ElasticSearchFramework::ShardedIndex do
       mappings = ExampleIndex2.mappings
       expect(mappings).to be_a(Hash)
       expect(mappings.length).to eq 1
-      expect(mappings['default'][:name][:type]).to eq :keyword
-      expect(mappings['default'][:name][:index]).to eq true
+      expect(mappings['_doc'][:name][:type]).to eq :keyword
+      expect(mappings['_doc'][:name][:index]).to eq true
     end
   end
 
@@ -263,16 +263,16 @@ RSpec.describe ElasticSearchFramework::ShardedIndex do
 
   describe '#get_item' do
     let(:id) { 10 }
-    let(:type) { 'default' }
+    let(:type) { '_doc' }
     it 'should call get on the repository' do
-      expect_any_instance_of(ElasticSearchFramework::Repository).to receive(:get).with(index: ExampleIndex2, id: id, type: type)
+      expect_any_instance_of(ElasticSearchFramework::Repository).to receive(:get).with(index: ExampleIndex2, id: id)
       ExampleIndex2.get_item(id: id, type: type)
     end
   end
 
   describe '#put_item' do
     let(:id) { 10 }
-    let(:type) { 'default' }
+    let(:type) { '_doc' }
     let(:item) do
       TestItem.new.tap do |i|
         i.id = id
@@ -284,33 +284,33 @@ RSpec.describe ElasticSearchFramework::ShardedIndex do
 
     context 'without specifying op_type' do
       it 'should call set on the repository with default op_type (index)' do
-        expect_any_instance_of(ElasticSearchFramework::Repository).to receive(:set).with(entity: item, index: ExampleIndex2, op_type: 'index', type: type)
+        expect_any_instance_of(ElasticSearchFramework::Repository).to receive(:set).with(entity: item, index: ExampleIndex2, op_type: 'index')
         ExampleIndex2.put_item(type: type, item: item)
       end
     end
 
     context 'with specified op_type' do
       it 'should call set on the repository with supplied op_type (index)' do
-        expect_any_instance_of(ElasticSearchFramework::Repository).to receive(:set).with(entity: item, index: ExampleIndex2, op_type: 'index', type: type)
+        expect_any_instance_of(ElasticSearchFramework::Repository).to receive(:set).with(entity: item, index: ExampleIndex2, op_type: 'index')
         ExampleIndex2.put_item(type: type, item: item, op_type: 'index')
       end
 
       it 'should call set on the repository with supplied op_type (create)' do
-        expect_any_instance_of(ElasticSearchFramework::Repository).to receive(:set).with(entity: item, index: ExampleIndex2, op_type: 'create', type: type)
+        expect_any_instance_of(ElasticSearchFramework::Repository).to receive(:set).with(entity: item, index: ExampleIndex2, op_type: 'create')
         ExampleIndex2.put_item(type: type, item: item, op_type: 'create')
       end
     end
 
     context 'without specifying routing_key' do
       it 'should call set on the repository without routing_key' do
-        expect_any_instance_of(ElasticSearchFramework::Repository).to receive(:set).with(entity: item, index: ExampleIndex2, op_type: 'index', type: type)
+        expect_any_instance_of(ElasticSearchFramework::Repository).to receive(:set).with(entity: item, index: ExampleIndex2, op_type: 'index')
         ExampleIndex2.put_item(type: type, item: item, op_type: 'index')
       end
     end
 
     context 'with specified routing_key' do
       it 'should call set on the repository with routing_key' do
-        expect_any_instance_of(ElasticSearchFramework::Repository).to receive(:set).with(entity: item, index: ExampleIndex2, op_type: 'index', type: type, routing_key: 6)
+        expect_any_instance_of(ElasticSearchFramework::Repository).to receive(:set).with(entity: item, index: ExampleIndex2, op_type: 'index', routing_key: 6)
         ExampleIndex2.put_item(type: type, item: item, op_type: 'index', routing_key: 6)
       end
     end
@@ -318,9 +318,9 @@ RSpec.describe ElasticSearchFramework::ShardedIndex do
 
   describe '#delete_item' do
     let(:id) { 10 }
-    let(:type) { 'default' }
+    let(:type) { '_doc' }
     it 'should call drop on the repository' do
-      expect_any_instance_of(ElasticSearchFramework::Repository).to receive(:drop).with(index: ExampleIndex2, id: id, type: type)
+      expect_any_instance_of(ElasticSearchFramework::Repository).to receive(:drop).with(index: ExampleIndex2, id: id)
       ExampleIndex2.delete_item(id: id, type: type)
     end
   end

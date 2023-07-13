@@ -123,7 +123,7 @@ module ElasticSearchFramework
       @repository ||= ElasticSearchFramework::Repository.new
     end
 
-    def get_item(id:, type: "default", routing_key: nil)
+    def get_item(id:, type: "_doc", routing_key: nil)
       active_index = indexes.detect { |i| i[:active] == true }[:klass]
 
       options = { index: self, id: id, type: type }
@@ -132,7 +132,7 @@ module ElasticSearchFramework
       repository.get(options)
     end
 
-    def put_item(type: "default", item:, op_type: 'index', routing_key: nil)
+    def put_item(type: "_doc", item:, op_type: 'index', routing_key: nil)
       indexes.each do |index|
         options = { entity: item, index: index[:klass], type: type, op_type: op_type }
         options[:routing_key] = routing_key if index[:klass].routing_enabled? && routing_key
@@ -141,7 +141,7 @@ module ElasticSearchFramework
       end
     end
 
-    def delete_item(id:, type: "default", routing_key: nil)
+    def delete_item(id:, type: "_doc", routing_key: nil)
       indexes.each do |index|
         options = { index: index[:klass], id: id, type: type }
         options[:routing_key] = routing_key if index[:klass].routing_enabled? && routing_key

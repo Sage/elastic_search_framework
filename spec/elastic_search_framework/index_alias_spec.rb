@@ -107,7 +107,7 @@ RSpec.describe ElasticSearchFramework::Index do
 
   describe '#get_item' do
     let(:id) { 10 }
-    let(:type) { 'default' }
+    let(:type) { '_doc' }
     context 'when active index routing_enabled false' do
       it 'should call get on the repository' do
         expect(ExampleIndexAlias.repository).to receive(:get).with(index: ExampleIndexAlias, id: id, type: type).once
@@ -130,7 +130,7 @@ RSpec.describe ElasticSearchFramework::Index do
 
   describe '#put_item' do
     let(:id) { 10 }
-    let(:type) { 'default' }
+    let(:type) { '_doc' }
     let(:item) do
       TestItem.new.tap do |i|
         i.id = id
@@ -164,7 +164,7 @@ RSpec.describe ElasticSearchFramework::Index do
 
   describe '#delete_item' do
     let(:id) { 10 }
-    let(:type) { 'default' }
+    let(:type) { '_doc' }
     it 'should call drop on the repository for each index of the alias' do
       expect(ExampleIndexAlias.repository).to receive(:drop).with(index: ExampleIndex, id: id, type: type).once
       expect(ExampleIndexAlias.repository).to receive(:drop).with(index: ExampleIndex2, id: id, type: type, routing_key: 5).once

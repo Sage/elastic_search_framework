@@ -3,7 +3,7 @@ class ExampleIndex
 
   index name: 'example_index'
 
-  mapping name: 'default', field: :name, type: :keyword, index: true
+  mapping name: '_doc', field: :name, type: :keyword, index: true
 end
 
 class ExampleIndexWithId
@@ -13,7 +13,7 @@ class ExampleIndexWithId
 
   id :number
 
-  mapping name: 'default', field: :name, type: :keyword, index: true
+  mapping name: '_doc', field: :name, type: :keyword, index: true
 end
 
 class ExampleIndexWithSettings
@@ -27,7 +27,7 @@ class ExampleIndexWithSettings
   settings name: :number_of_shards, value: 1
   settings name: :analysis, type: :normalizer, value: normalizer_value
   settings name: :analysis, type: :analyzer, value: analyzer_value
-  mapping name: 'default', field: :name, type: :keyword, index: true
+  mapping name: '_doc', field: :name, type: :keyword, index: true
 end
 
 class InvalidExampleIndex

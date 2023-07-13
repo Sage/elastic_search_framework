@@ -56,8 +56,8 @@ module ElasticSearchFramework
     end
 
     def put(payload:)
-      mapping_name = payload[:mappings] ? "/#{payload[:mappings].keys[0]}" : ''
-      uri = URI("#{host}/#{full_name}#{mapping_name}")
+      # mapping_name = payload[:mappings] ? "/#{payload[:mappings].keys[0]}" : ''
+      uri = URI("#{host}/#{full_name}/_doc")
       request = Net::HTTP::Post.new(uri.request_uri)
       request.body = JSON.dump(payload)
       request.content_type = 'application/json'
@@ -173,22 +173,22 @@ module ElasticSearchFramework
       @repository ||= ElasticSearchFramework::Repository.new
     end
 
-    def get_item(id:, type: 'default', routing_key: nil)
-      options = { index: self, id: id, type: type }
+    def get_item(id:, type: '_doc', routing_key: nil)
+      options = { index: self, id: id}
       options[:routing_key] = routing_key if routing_enabled? && routing_key
 
       repository.get(options)
     end
 
-    def put_item(type: 'default', item:, op_type: 'index', routing_key: nil)
-      options = { entity: item, index: self, type: type, op_type: op_type }
+    def put_item(type: '_doc', item:, op_type: 'index', routing_key: nil)
+      options = { entity: item, index: self, op_type: op_type }
       options[:routing_key] = routing_key if routing_enabled? && routing_key
-
+      
       repository.set(options)
     end
 
-    def delete_item(id:, type: 'default', routing_key: nil)
-      options = { index: self, id: id, type: type }
+    def delete_item(id:, type: '_doc', routing_key: nil)
+      options = { index: self, id: id }
       options[:routing_key] = routing_key if routing_enabled? && routing_key
 
       repository.drop(options)
