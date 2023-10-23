@@ -21,7 +21,7 @@ Or install it yourself as:
 ## Usage
 
 
-##Global Config
+## Global Config
 
 ### #namespace
 The namespace is used to set the prefix applied to all table and index names.
@@ -241,8 +241,7 @@ To run the tests locally, we use Docker to provide both a Ruby and JRuby environ
 > This builds the Ruby docker image.
 
 ```bash
-cd script
-./setup.sh
+./script/setup.sh
 ```
 
 ### Run Tests:
@@ -250,8 +249,7 @@ cd script
 > This executes the test suite.
 
 ```bash
-cd script
-./test.sh
+./script/test.sh
 ```
 
 ### Cleanup
@@ -259,8 +257,7 @@ cd script
 > This is used to clean down docker image created in the setup script.
 
 ```bash
-cd script
-./cleanup.sh
+./script/cleanup.sh
 ```
 
 ## Development

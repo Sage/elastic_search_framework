@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'json', '2.1.0'
+gem 'json'
 
 # Specify your gem's dependencies in elastic_search_framework.gemspec
 gemspec

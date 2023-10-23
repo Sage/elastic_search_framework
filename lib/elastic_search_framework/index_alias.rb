@@ -129,7 +129,7 @@ module ElasticSearchFramework
       options = { index: self, id: id, type: type }
       options[:routing_key] = routing_key if active_index.routing_enabled? && routing_key
 
-      repository.get(options)
+      repository.get(**options)
     end
 
     def put_item(type: "default", item:, op_type: 'index', routing_key: nil)
@@ -137,7 +137,7 @@ module ElasticSearchFramework
         options = { entity: item, index: index[:klass], type: type, op_type: op_type }
         options[:routing_key] = routing_key if index[:klass].routing_enabled? && routing_key
 
-        repository.set(options)
+        repository.set(**options)
       end
     end
 
@@ -146,7 +146,7 @@ module ElasticSearchFramework
         options = { index: index[:klass], id: id, type: type }
         options[:routing_key] = routing_key if index[:klass].routing_enabled? && routing_key
 
-        repository.drop(options)
+        repository.drop(**options)
       end
     end
 

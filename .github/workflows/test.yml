@@ -6,11 +6,16 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        ruby: ['2.7', '3.2']
+
     steps:
       - uses: actions/checkout@v2
-      - uses: ruby/setup-ruby@v1.78.0
+      - name: Set up Ruby ${{ matrix.ruby }}
+        uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 2.4
+          ruby-version: ${{ matrix.ruby }}
           bundler: 1
           bundler-cache: true
         env:
