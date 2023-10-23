@@ -1,10 +1,12 @@
-FROM ruby:2.3-alpine
+FROM ruby:3.2-alpine
 
 RUN apk add --no-cache --update bash
 
+COPY Gemfile elastic_search_framework.gemspec .
+COPY lib/elastic_search_framework/version.rb ./lib/elastic_search_framework/
+
 RUN apk add --no-cache --update --virtual .gem-builddeps make gcc libc-dev ruby-json \
-    && gem install -N oj -v 2.15.0 \
-    && gem install -N json -v 2.1.0 \
+    && bundle \
     && apk del .gem-builddeps
 
 # Create application directory and set it as the WORKDIR.

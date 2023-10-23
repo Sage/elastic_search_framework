@@ -18,4 +18,4 @@ services:
     depends_on:
       - elasticsearch
     volumes:
-      - ../:/elastic_search_framework
+      - ./:/elastic_search_framework
