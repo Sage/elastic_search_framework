@@ -74,7 +74,7 @@ module ElasticSearchFramework
     end
 
     def query(index:, expression:, type: 'default', limit: 10, count: false, routing_key: nil)
-      uri_string = "#{host}/#{index.full_name}/#{type}/_search?q=#{URI.encode(expression)}&size=#{limit}"
+      uri_string = "#{host}/#{index.full_name}/#{type}/_search?q=#{CGI::escape(expression)}&size=#{limit}"
       uri_string += "&routing=#{routing_key}" if routing_key
 
       uri = URI(uri_string)

@@ -23,6 +23,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rake', '~> 10.0'
   spec.add_development_dependency 'rspec'
   spec.add_development_dependency 'pry'
+  spec.add_development_dependency 'pry-byebug'
   spec.add_dependency 'hash_kit', '~> 0.5'
   spec.add_dependency 'json'
   spec.add_dependency 'connection_pool'
