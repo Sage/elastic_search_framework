@@ -31,7 +31,7 @@ jobs:
       - name: Runs Elasticsearch
         uses: elastic/elastic-github-actions/elasticsearch@master
         with:
-          stack-version: 6.8.17
+          stack-version: 7.10.0
 
       - name: Run tests
         env:
