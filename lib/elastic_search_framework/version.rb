@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ElasticSearchFramework
-  VERSION = '2.4.2'
+  VERSION = '3.0.0'
 end

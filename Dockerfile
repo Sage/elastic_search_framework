@@ -5,7 +5,7 @@ RUN apk add --no-cache --update bash
 COPY Gemfile elastic_search_framework.gemspec .
 COPY lib/elastic_search_framework/version.rb ./lib/elastic_search_framework/
 
-RUN apk add --no-cache --update --virtual .gem-builddeps make gcc libc-dev ruby-json \
+RUN apk add --no-cache --update --virtual .gem-builddeps make gcc libc-dev \
     && bundle \
     && apk del .gem-builddeps
 
