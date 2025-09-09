@@ -28,7 +28,7 @@ module ElasticSearchFramework
     end
 
     def get(index:, id:, type: 'default', routing_key: nil)
-      uri_string = "#{host}/#{index.full_name}/_doc/#{id}"
+      uri_string = "#{host}/#{index.full_name}/_source/#{id}"
       uri_string += "?routing=#{routing_key}" if routing_key
 
       uri = URI(uri_string)
@@ -42,9 +42,9 @@ module ElasticSearchFramework
       if valid_response?(response.code)
         result = JSON.load(response.body)
         hash_helper.indifferent!(result)
-        return result
+        result
       elsif Integer(response.code) == 404
-        return nil
+        nil
       else
         raise ElasticSearchFramework::Exceptions::IndexError.new(
             "An error occurred getting an index document. Response: #{response.body}"
