@@ -130,20 +130,21 @@ module ElasticSearchFramework
       self.index_settings = {} if index_settings.nil?
       index_settings[name] = {} if index_settings[name].nil?
       return index_settings[name][type] = value if type
+
       index_settings[name] = value
     end
 
     def create_payload
-      payload = { }
+      payload = {}
       payload[:settings] = index_settings unless index_settings.nil?
 
       unless mappings.keys.empty?
         payload[:mappings] = {}
 
-        mappings.keys.each do |name|
-          payload[:mappings][name] = { properties: {} }
-          mappings[name].keys.each do |field|
-            payload[:mappings][name][:properties][field] = mappings[name][field]
+        mappings.each_key do |name|
+          payload[:mappings] = { properties: {} }
+          mappings[name].each_key do |field|
+            payload[:mappings][:properties][field] = mappings[name][field]
           end
         end
       end
@@ -189,21 +190,21 @@ module ElasticSearchFramework
       @repository ||= ElasticSearchFramework::Repository.new
     end
 
-    def get_item(id:, type: 'default', routing_key: nil)
+    def get_item(id:, type: '_doc', routing_key: nil)
       options = { index: self, id: id, type: type }
       options[:routing_key] = routing_key if routing_enabled? && routing_key
 
       repository.get(**options)
     end
 
-    def put_item(type: 'default', item:, op_type: 'index', routing_key: nil)
+    def put_item(item:, type: '_doc', op_type: 'index', routing_key: nil)
       options = { entity: item, index: self, type: type, op_type: op_type }
       options[:routing_key] = routing_key if routing_enabled? && routing_key
 
       repository.set(**options)
     end
 
-    def delete_item(id:, type: 'default', routing_key: nil)
+    def delete_item(id:, type: '_doc', routing_key: nil)
       options = { index: self, id: id, type: type }
       options[:routing_key] = routing_key if routing_enabled? && routing_key
 
