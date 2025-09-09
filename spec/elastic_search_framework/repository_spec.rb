@@ -71,15 +71,15 @@ RSpec.describe ElasticSearchFramework::Repository do
         subject.set(index: ExampleIndex, entity: item2)
         subject.set(index: ExampleIndex, entity: item5)
         index_item1 = subject.get(index: ExampleIndex, id: item1.id)
-        expect(index_item1[:id]).to eq item1.id
-        expect(index_item1[:name]).to eq item1.name
-        expect(index_item1[:timestamp]).to eq item1.timestamp
-        expect(index_item1[:number]).to eq item1.number
+        expect(index_item1[:_source][:id]).to eq item1.id
+        expect(index_item1[:_source][:name]).to eq item1.name
+        expect(index_item1[:_source][:timestamp]).to eq item1.timestamp
+        expect(index_item1[:_source][:number]).to eq item1.number
         index_item2 = subject.get(index: ExampleIndex, id: item2.id)
-        expect(index_item2[:id]).to eq item2.id
-        expect(index_item2[:name]).to eq item2.name
-        expect(index_item2[:timestamp]).to eq item2.timestamp
-        expect(index_item2[:number]).to eq item2.number
+        expect(index_item2[:_source][:id]).to eq item2.id
+        expect(index_item2[:_source][:name]).to eq item2.name
+        expect(index_item2[:_source][:timestamp]).to eq item2.timestamp
+        expect(index_item2[:_source][:number]).to eq item2.number
         subject.drop(index: ExampleIndex, id: item1.id)
         expect(subject.get(index: ExampleIndex, id: item1.id)).to be_nil
       end
@@ -92,10 +92,10 @@ RSpec.describe ElasticSearchFramework::Repository do
         subject.set(index: ExampleIndex, entity: item1)
         subject.set(index: ExampleIndex, entity: item1.tap { |i| i.timestamp += 100 }, op_type: 'create')
         index_item1 = subject.get(index: ExampleIndex, id: item1.id)
-        expect(index_item1[:id]).to eq item1.id
-        expect(index_item1[:name]).to eq item1.name
-        expect(index_item1[:timestamp]).to eq original_timestamp
-        expect(index_item1[:number]).to eq item1.number
+        expect(index_item1[:_source][:id]).to eq item1.id
+        expect(index_item1[:_source][:name]).to eq item1.name
+        expect(index_item1[:_source][:timestamp]).to eq original_timestamp
+        expect(index_item1[:_source][:number]).to eq item1.number
       end
     end
 
@@ -231,15 +231,19 @@ RSpec.describe ElasticSearchFramework::Repository do
                 'col' => 38
               }
             ],
-            'type' => 'parsing_exception',
-            'reason' => '[name] query malformed, no start_object after query name',
-            'line' => 1,
-            'col' => 38
+            'type' => 'x_content_parse_exception',
+            'reason' => '[1:38] [bool] failed to parse field [must_not]',
+            'caused_by' => {
+              'type' => 'parsing_exception',
+              'reason' => '[name] query malformed, no start_object after query name',
+              'line' => 1,
+              'col' => 38
+            }
           },
           'status' => 400
         }
 
-        expect{ subject.json_query(index_name: 'test_example_index', json_query: example.to_json) }
+        expect { subject.json_query(index_name: 'test_example_index', json_query: example.to_json) }
           .to raise_error(ElasticSearchFramework::Exceptions::IndexError, "An error occurred executing an index query. Response: #{response_body.to_json}")
       end
     end
@@ -254,5 +258,4 @@ RSpec.describe ElasticSearchFramework::Repository do
       expect(subject.host).to eq "#{ElasticSearchFramework.host}:#{ElasticSearchFramework.port}"
     end
   end
-
 end
