@@ -59,10 +59,16 @@ module ElasticSearchFramework
       uri = URI("#{host}/#{full_name}")
 
       request = Net::HTTP::Put.new(uri.request_uri)
+      request.basic_auth(ElasticSearchFramework.username, ElasticSearchFramework.password)
       request.body = JSON.dump(payload)
       request.content_type = 'application/json'
 
       response = repository.with_client do |client|
+        if uri.scheme != 'https'
+          client.use_ssl = false
+          client.verify_mode = OpenSSL::SSL::VERIFY_NONE
+        end
+
         client.request(request)
       end
 
@@ -81,8 +87,14 @@ module ElasticSearchFramework
       uri = URI("#{host}/#{full_name}")
 
       request = Net::HTTP::Get.new(uri.request_uri)
+      request.basic_auth(ElasticSearchFramework.username, ElasticSearchFramework.password)
 
       response = repository.with_client do |client|
+        if uri.scheme != 'https'
+          client.use_ssl = false
+          client.verify_mode = OpenSSL::SSL::VERIFY_NONE
+        end
+
         client.request(request)
       end
 
@@ -101,8 +113,14 @@ module ElasticSearchFramework
       uri = URI("#{host}/#{full_name}")
 
       request = Net::HTTP::Delete.new(uri.request_uri)
+      request.basic_auth(ElasticSearchFramework.username, ElasticSearchFramework.password)
 
       response = repository.with_client do |client|
+        if uri.scheme != 'https'
+          client.use_ssl = false
+          client.verify_mode = OpenSSL::SSL::VERIFY_NONE
+        end
+
         client.request(request)
       end
 

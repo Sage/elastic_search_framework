@@ -29,3 +29,5 @@ end
 ElasticSearchFramework.logger.level = Logger::ERROR
 ElasticSearchFramework.host = ENV.fetch('ELASTIC_SEARCH_HOST', 'http://elasticsearch')
 ElasticSearchFramework.port = ENV.fetch('ELASTIC_SEARCH_PORT', '9200')
+ElasticSearchFramework.username = ENV.fetch('ELASTIC_SEARCH_USERNAME', 'admin')
+ElasticSearchFramework.password = ENV.fetch('ELASTIC_SEARCH_PASSWORD', 'Password321@Secure')

@@ -6,6 +6,8 @@ services:
     environment:
       - discovery.type=single-node
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - OPENSEARCH_INITIAL_ADMIN_PASSWORD=Password321@Secure # Temporary for testing locally - this will change longer term
+      - plugins.security.disabled=true # Temporary for testing locally - this will change longer term.
     ports:
       - "9200:9200"
 

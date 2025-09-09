@@ -37,4 +37,16 @@ module ElasticSearchFramework
   def self.port
     @port ||= 9200
   end
+  def self.username=(value)
+    @username = value
+  end
+  def self.username
+    @username
+  end
+  def self.password
+    @password
+  end
+  def self.password=(value)
+    @password = value
+  end
 end
