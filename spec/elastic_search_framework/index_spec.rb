@@ -58,8 +58,8 @@ RSpec.describe ElasticSearchFramework::Index do
       mappings = ExampleIndex.mappings
       expect(mappings).to be_a(Hash)
       expect(mappings.length).to eq 1
-      expect(mappings['default'][:name][:type]).to eq :keyword
-      expect(mappings['default'][:name][:index]).to eq true
+      expect(mappings[:name][:type]).to eq :keyword
+      expect(mappings[:name][:index]).to eq true
     end
   end
 
