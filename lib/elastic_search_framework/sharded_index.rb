@@ -34,7 +34,6 @@ module ElasticSearchFramework
 
       mappings = instance_variable_get(:@elastic_search_index_mappings)
 
-      mappings[field] = {}
       mappings[field] = options
 
       instance_variable_set(:@elastic_search_index_mappings, mappings)
@@ -138,13 +137,12 @@ module ElasticSearchFramework
       payload[:settings] = index_settings unless index_settings.nil?
 
       unless mappings.keys.empty?
-        payload[:mappings] = {}
-        payload[:mappings][:properties] = {}
+        payload[:mappings] = { properties: {} }
 
         mappings.each_key do |name|
-          payload[:mappings][:properties][name] = {}
-          mappings[name].each do |key, value|
-            payload[:mappings][:properties][name][key] = value
+          mappings[name].each_key do |field|
+            payload[:mappings][:properties][name] = {} if payload[:mappings][:properties][name].nil?
+            payload[:mappings][:properties][name][field] = mappings[name][field]
           end
         end
       end
